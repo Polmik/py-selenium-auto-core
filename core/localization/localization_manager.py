@@ -27,8 +27,4 @@ class LocalizationManager:
 
     def __get_localization_file(self, language: str, root_path: str) -> dict:
         resource_name = self._lang_resource.format(language)
-        resource_path = FileReader.get_resource_file(resource_name, root_path)
-        if not os.path.exists(resource_path):
-            resource_path = os.path.join(ROOT_PATH_CORE, resource_name)
-        with open(resource_path, "r") as file:
-            return json.loads(file.read())
+        return json.loads(FileReader.get_resource_file(resource_name, root_path))

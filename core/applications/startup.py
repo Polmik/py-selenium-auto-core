@@ -21,3 +21,4 @@ class Startup(containers.DeclarativeContainer):
     retry_configuration: RetryConfiguration = providers.Singleton(RetryConfiguration, settings_file)
     localization_manager: LocalizationManager = providers.Singleton(LocalizationManager, logger_configuration, logger)
     localized_logger: LocalizedLogger = providers.Singleton(LocalizedLogger, localization_manager, logger, logger_configuration)
+
