@@ -9,6 +9,8 @@ from core.configurations.timeout_configuration import TimeoutConfiguration
 from core.localization.localization_manager import LocalizationManager
 from core.localization.localized_logger import LocalizedLogger
 from core.logging.logger import Logger
+from core.utilities.action_retrier import ActionRetrier
+from core.utilities.element_action_retrier import ElementActionRetrier
 from core.utilities.file_reader import FileReader
 
 
@@ -21,4 +23,7 @@ class Startup(containers.DeclarativeContainer):
     retry_configuration: RetryConfiguration = providers.Singleton(RetryConfiguration, settings_file)
     localization_manager: LocalizationManager = providers.Singleton(LocalizationManager, logger_configuration, logger)
     localized_logger: LocalizedLogger = providers.Singleton(LocalizedLogger, localization_manager, logger, logger_configuration)
+    action_retrier: ActionRetrier = providers.Singleton(ActionRetrier, retry_configuration)
+    element_action_retrier: ElementActionRetrier = providers.Singleton(ElementActionRetrier, retry_configuration)
+
 
