@@ -5,10 +5,11 @@ from typing import Optional
 from core import ROOT_PATH_CORE
 from core.configurations.logger_configuration import LoggerConfiguration
 from core.logging.logger import Logger
+from core.utilities.file_reader import FileReader
 
 
 class LocalizationManager:
-    _lang_resource = "resources\\localization\\{0}.json"
+    _lang_resource = "localization\\{0}.json"
     logger = None
 
     def __init__(self, logger_configuration: LoggerConfiguration, logger: Logger, root_path: Optional[str] = None):
@@ -26,7 +27,7 @@ class LocalizationManager:
 
     def __get_localization_file(self, language: str, root_path: str) -> dict:
         resource_name = self._lang_resource.format(language)
-        resource_path = os.path.join(root_path, resource_name)
+        resource_path = FileReader.get_resource_file(resource_name, root_path)
         if not os.path.exists(resource_path):
             resource_path = os.path.join(ROOT_PATH_CORE, resource_name)
         with open(resource_path, "r") as file:
