@@ -12,4 +12,4 @@ class LoggerConfiguration:
 
     @property
     def log_page_source(self) -> bool:
-        return self.__logger.get("log_page_source", True)
+        return self.__logger.get("logPageSource", True)

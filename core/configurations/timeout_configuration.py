@@ -6,19 +6,19 @@ class TimeoutConfiguration:
 
     @property
     def implicit(self) -> float:
-        return self.__timeout.get("timeout_implicit")
+        return self.__timeout.get("timeoutImplicit")
 
     @property
     def condition(self) -> float:
-        return self.__timeout.get("timeout_condition")
+        return self.__timeout.get("timeoutCondition")
 
     @property
     def polling_interval(self) -> float:
-        return self.__timeout.get("timeout_polling_interval")
+        return self.__timeout.get("timeoutPollingInterval")
 
     @property
     def script(self) -> float:
-        return self.__timeout.get("timeout_script")
+        return self.__timeout.get("timeoutCommand")
 
     @property
     def page_load(self) -> float:

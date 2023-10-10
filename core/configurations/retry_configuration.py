@@ -10,4 +10,4 @@ class RetryConfiguration:
 
     @property
     def polling_interval(self) -> int:
-        return self.__retry.get("polling_interval")
+        return self.__retry.get("pollingInterval")

@@ -11,7 +11,7 @@
   },
   "logger": {
     "language": "en",
-    "log_page_source": true
+    "logPageSource": true
   },
   "elementCache": {
     "isEnabled": false
