@@ -4,7 +4,7 @@ from typing import Callable
 from dependency_injector import containers
 from dependency_injector.providers import Singleton, Factory
 
-from core.applications.iapplication import Application
+from core.applications.application import Application
 from core.configurations.element_cache_configuration import ElementCacheConfiguration
 from core.configurations.logger_configuration import LoggerConfiguration
 from core.configurations.retry_configuration import RetryConfiguration

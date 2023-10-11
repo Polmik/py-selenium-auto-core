@@ -1,5 +1,4 @@
 import json
-import os
 from typing import Optional
 
 from core import ROOT_PATH_CORE

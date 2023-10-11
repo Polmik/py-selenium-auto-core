@@ -1,16 +1,21 @@
 import abc
-import logging
 from typing import Any
 
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
+from core.applications.application import Application
 from core.configurations.element_cache_configuration import ElementCacheConfiguration
+from core.configurations.logger_configuration import LoggerConfiguration
 from core.elements.constants.element_state import ElementState
 from core.elements.element_cache_handler import ElementCacheHandler
+from core.elements.element_factory import ElementFactory
 from core.elements.element_finder import ElementFinder
 from core.elements.element_state_provider import ElementStateProvider
+from core.localization.localization_manager import LocalizationManager
+from core.localization.localized_logger import LocalizedLogger
 from core.locator.locator import Locator
+from core.logging.logger import Logger
 from core.utilities.action_retrier import ActionRetrier
 from core.waitings.conditional_wait import ConditionalWait
 
@@ -41,41 +46,76 @@ class CoreElement(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def application(self) -> Application:
+        raise NotImplementedError("Abstract")
+
+    @property
+    @abc.abstractmethod
     def action_retrier(self) -> ActionRetrier:
-        raise NotImplementedError
+        raise NotImplementedError("Abstract")
 
     @property
     @abc.abstractmethod
     def cache_configuration(self) -> ElementCacheConfiguration:
-        raise NotImplementedError
+        raise NotImplementedError("Abstract")
 
     @property
     @abc.abstractmethod
     def conditional_wait(self) -> ConditionalWait:
-        raise NotImplementedError
+        raise NotImplementedError("Abstract")
 
     @property
     @abc.abstractmethod
     def element_type(self) -> str:
-        raise NotImplementedError
+        raise NotImplementedError("Abstract")
 
     @property
     @abc.abstractmethod
-    def factory(self):
-        raise NotImplementedError
+    def factory(self) -> ElementFactory:
+        raise NotImplementedError("Abstract")
 
     @property
     @abc.abstractmethod
     def finder(self) -> ElementFinder:
-        raise NotImplementedError
+        raise NotImplementedError("Abstract")
 
     @property
     @abc.abstractmethod
     def image_comparator(self):
-        raise NotImplementedError
+        raise NotImplementedError("Abstract")
+
+    @property
+    @abc.abstractmethod
+    def localized_logger(self) -> LocalizedLogger:
+        raise NotImplementedError("Abstract")
+
+    @property
+    @abc.abstractmethod
+    def localization_manager(self) -> LocalizationManager:
+        raise NotImplementedError("Abstract")
+
+    @property
+    def logger_configuration(self) -> LoggerConfiguration:
+        return self.localized_logger.configuration
+
+    @property
+    def logger(self) -> Logger:
+        return Logger()
+
+    @property
+    def log_element_state(self):
+        def predicate(message_key: str, state_key: str):
+            self.localized_logger.info_element_action(
+                self.element_type,
+                self.name,
+                message_key,
+                self.localization_manager.get_localized_message(state_key)
+            )
+
+        return predicate
 
     def click(self):
-        self.log_element_action(f"Clicking on {self.name}")
+        self.log_element_action("loc.clicking")
         self.do_with_retry(lambda: self.get_element().click())
 
     def find_child_element(self):
@@ -84,16 +124,16 @@ class CoreElement(abc.ABC):
     def find_child_elements(self):
         raise NotImplementedError
 
-    def get_attribute(self, attr):
-        self.log_element_action(f"Getting attribute '{attr}' from {self.name}")
+    def get_attribute(self, attr) -> str:
+        self.log_element_action("loc.el.getattr", attr)
         value = self.do_with_retry(lambda: self.get_element().get_attribute(attr))
-        self.log_element_action(f"Value of attribute '{attr}': [{value}]")
+        self.log_element_action("loc.el.attr.value", attr, value)
         return value
 
-    def get_element(self, timeout=None) -> WebElement:
+    def get_element(self, timeout: float = None) -> WebElement:
         try:
             if self.cache_configuration.is_enabled:
-                raise NotImplementedError("No implementation for cache")
+                return self.cache.get_element(timeout)
             return self.finder.find_element(
                 locator=self.locator,
                 state=self.element_state,
@@ -101,46 +141,30 @@ class CoreElement(abc.ABC):
                 name=self.name
             )
         except NoSuchElementException as e:
-            self.log_page_source(e)
-            raise e
-
-    def get_elements(self, timeout=None) -> WebElement:
-        try:
-            if self.cache_configuration.is_enabled:
-                raise NotImplementedError("No implementation for cache")
-            return self.finder.find_elements(
-                locator=self.locator,
-                state=self.element_state,
-                timeout=timeout,
-                name=self.name
-            )
-        except NoSuchElementException as e:
-            self.log_page_source(e)
+            if self.logger_configuration.log_page_source:
+                self.log_page_source(e)
             raise e
 
     def log_page_source(self, exception: WebDriverException):
         try:
-            logging.debug(f"Page source:{self.__browser.driver.page_source}", exc_info=exception)
+            self.logger.debug(f"Page source:{self.application.driver.page_source}", exc_info=exception)
         except WebDriverException as e:
-            logging.error(e.msg)
-            logging.debug("An exception occurred while tried to save the page source", exc_info=e)
+            self.logger.error(e.msg)
+            self.logger.debug("An exception occurred while tried to save the page source", exc_info=e)
 
     @property
     def text(self) -> str:
-        self.log_element_action(f"Getting text from element {self.name}")
+        self.log_element_action("loc.get.text")
         text = self.do_with_retry(lambda: self.get_element().text)
-        self.log_element_action(f"Element's text: [{text}]")
+        self.log_element_action("loc.text.value", text)
         return text
 
     def send_keys(self, value) -> None:
-        self.log_element_action(f"Setting text for element {self.name}")
-        self.log_element_action(f"Sending keys '{value}'")
+        self.log_element_action("loc.text.sending.keys", value)
         self.do_with_retry(lambda: self.get_element().send_keys(value))
 
     def do_with_retry(self, function) -> Any:
         return self.action_retrier.do_with_retry(function)
 
-    def log_element_action(self, message):
-        is_debug = False
-        logger = logging.debug if is_debug else logging.info
-        logger(f"Element {self.name}: {message}")
+    def log_element_action(self, message_key: str, *args):
+        self.localized_logger.info_element_action(self.element_type, self.name, message_key, args)

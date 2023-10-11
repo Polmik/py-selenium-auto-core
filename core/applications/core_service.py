@@ -2,7 +2,7 @@ from typing import Callable
 
 from dependency_injector import providers
 
-from core.applications.iapplication import Application
+from core.applications.application import Application
 from core.applications.startup import ServiceProvider, Startup
 
 

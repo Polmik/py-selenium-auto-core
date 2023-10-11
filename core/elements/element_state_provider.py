@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from core.elements.constants.desired_state import DesiredState
 from core.elements.constants.element_state import ElementState
+from core.elements.element_finder import ElementFinder
 from core.locator.locator import Locator
 from core.waitings.conditional_wait import ConditionalWait
 

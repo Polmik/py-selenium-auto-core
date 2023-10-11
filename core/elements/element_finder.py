@@ -22,7 +22,7 @@ class ElementFinder:
             locator: Locator,
             state: ElementState | Callable = ElementState.ExistsInAnyState,
             state_name: str = "desired",
-            timeout: int = None,
+            timeout: float = None,
             name: str = None):
         if isinstance(state, ElementState):
             desired_state = self._resolve_state(state)

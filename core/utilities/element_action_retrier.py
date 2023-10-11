@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, Any
 
 from selenium.common import StaleElementReferenceException, InvalidElementStateException
 
@@ -15,5 +15,5 @@ class ElementActionRetrier(ActionRetrier):
             type(InvalidElementStateException),
         ]
 
-    def do_with_retry(self, function: Callable, handled_exceptions: Optional[list] = None):
-        super().do_with_retry(function, handled_exceptions or self.handled_exceptions)
+    def do_with_retry(self, function: Callable, handled_exceptions: Optional[list] = None) -> Any:
+        return super().do_with_retry(function, handled_exceptions or self.handled_exceptions)

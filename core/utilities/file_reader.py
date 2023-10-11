@@ -7,7 +7,7 @@ class FileReader:
     __resource_folder = "resources"
 
     @staticmethod
-    def is_resource_file_exist(file_name: str, root_path: str = ROOT_PATH_CORE):
+    def is_resource_file_exist(file_name: str, root_path: str = ROOT_PATH_CORE) -> bool:
         return os.path.exists(FileReader.__get_resource_file_path(file_name, root_path))
 
     @staticmethod
@@ -19,5 +19,5 @@ class FileReader:
         raise FileExistsError(f"There are not existing files by path '{file_path}'")
 
     @staticmethod
-    def __get_resource_file_path(file_name: str, root_path: str):
+    def __get_resource_file_path(file_name: str, root_path: str) -> str:
         return os.path.join(root_path, FileReader.__resource_folder, file_name)

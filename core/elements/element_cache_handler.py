@@ -29,7 +29,7 @@ class ElementCacheHandler:
             # refresh is needed if the property is not available
             return True
 
-    def get_element(self, timeout: int = None, custom_sate: ElementState = None):
+    def get_element(self, timeout: float = None, custom_sate: ElementState = None):
         if self.is_refresh_needed(custom_sate):
             self.__element = self.__element_finder.find_element(
                 locator=self.__locator,

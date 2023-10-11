@@ -2,5 +2,5 @@ PyHamcrest==1.9.0
 pytest==3.7.3
 pytest-allure-adaptor==1.7.10
 selenium~=4.11.2
-webdriver-manager=4.0.0
-dependency-injector=4.41.0
+webdriver-manager==4.0.0
+dependency-injector==4.41.0

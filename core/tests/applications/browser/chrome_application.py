@@ -1,6 +1,6 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
 
-from core.applications.iapplication import Application
+from core.applications.application import Application
 from core.configurations.timeout_configuration import TimeoutConfiguration
 
 
