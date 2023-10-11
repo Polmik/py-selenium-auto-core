@@ -1,5 +1,5 @@
 import abc
-from typing import Any
+from typing import Any, Callable
 
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
@@ -103,7 +103,7 @@ class CoreElement(abc.ABC):
         return Logger()
 
     @property
-    def log_element_state(self):
+    def log_element_state(self) -> Callable[[str, str], None]:
         def predicate(message_key: str, state_key: str):
             self.localized_logger.info_element_action(
                 self.element_type,
