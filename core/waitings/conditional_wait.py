@@ -1,20 +1,19 @@
 import time
 from time import sleep
-from typing import Any, Callable
+from typing import Any, Callable, List
 
 from selenium.common import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from core.applications.application import Application
 from core.configurations.timeout_configuration import TimeoutConfiguration
 
 
 class ConditionalWait:
 
-    def __init__(self, timeout_configuration: TimeoutConfiguration, application: Application):
+    def __init__(self, timeout_configuration: TimeoutConfiguration, service_provider):
         self.__timeout_configuration = timeout_configuration
-        self.__application = application
+        self.__service_provider = service_provider
 
     def wait_for_driver(
             self,
@@ -22,22 +21,22 @@ class ConditionalWait:
             timeout: float = None,
             polling_interval: float = None,
             message: str = None,
-            exceptions_to_ignore: list = None
+            exceptions_to_ignore: List = None
     ) -> Any:
-        ignore_exceptions = exceptions_to_ignore or [type(StaleElementReferenceException)]
+        ignore_exceptions = exceptions_to_ignore or [StaleElementReferenceException]
         wait_timeout = self.__resolve_condition_timeout(timeout)
         check_interval = self.__resolve_polling_interval(polling_interval)
-
-        self.__application.set_implicit_wait_timeout(0)
+        application = self.__service_provider.application()
+        application.set_implicit_wait_timeout(0)
         wait = WebDriverWait(
-            driver=self.__application.driver,
+            driver=application.driver,
             timeout=wait_timeout,
             poll_frequency=check_interval,
             ignored_exceptions=ignore_exceptions,
         )
 
         result = wait.until(function, self.__get_timeout_exception_message(wait_timeout, message))
-        self.__application.set_implicit_wait_timeout(self.__timeout_configuration.implicit)
+        application.set_implicit_wait_timeout(self.__timeout_configuration.implicit)
         return result
 
     def wait_for_condition(
@@ -58,7 +57,7 @@ class ConditionalWait:
 
         return self.__is_condition_satisfied(
             function=predicate,
-            exceptions_to_ignore=[type(TimeoutException)],
+            exceptions_to_ignore=[TimeoutException],
         )
 
     def wait_for_true(
@@ -92,17 +91,21 @@ class ConditionalWait:
     @staticmethod
     def __is_condition_satisfied(
             function: Callable[[], bool],
-            exceptions_to_ignore: list
+            exceptions_to_ignore: List
     ) -> bool:
         try:
             return function()
-        except Exception as e:
-            if type(e) in exceptions_to_ignore:
+        except Exception as ex:
+            if ConditionalWait._is_ignored_exception(ex, exceptions_to_ignore):
                 return False
-            raise e
+            raise ex
 
     def __resolve_condition_timeout(self, timeout: float) -> float:
         return self.__timeout_configuration.condition if timeout is None else timeout
 
     def __resolve_polling_interval(self, polling_interval: float) -> float:
         return self.__timeout_configuration.polling_interval if polling_interval is None else polling_interval
+
+    @staticmethod
+    def _is_ignored_exception(ex: Exception, exceptions_to_ignore: List) -> bool:
+        return any(map(lambda exti: isinstance(ex, exti), exceptions_to_ignore))

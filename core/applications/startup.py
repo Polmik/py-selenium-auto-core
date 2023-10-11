@@ -2,7 +2,7 @@ import json
 from typing import Callable
 
 from dependency_injector import containers
-from dependency_injector.providers import Singleton, Factory
+from dependency_injector.providers import Singleton, Factory, Self
 
 from core.applications.application import Application
 from core.configurations.element_cache_configuration import ElementCacheConfiguration
@@ -20,8 +20,10 @@ from core.waitings.conditional_wait import ConditionalWait
 
 
 class ServiceProvider(containers.DeclarativeContainer):
-    settings_file: Singleton[dict] = Singleton(lambda: json.loads(FileReader.get_resource_file("settings.json")))
-    application: Factory[Application] = None
+    __self__ = Self()
+
+    settings_file: Singleton[dict] = Singleton(lambda: {})
+    application: Factory[Application] = Factory(Application)
     logger: Singleton[Logger] = Singleton(Logger)
     element_cache_configuration: Singleton[ElementCacheConfiguration] = Singleton(ElementCacheConfiguration, settings_file)
     logger_configuration: Singleton[LoggerConfiguration] = Singleton(LoggerConfiguration, settings_file)
@@ -31,8 +33,8 @@ class ServiceProvider(containers.DeclarativeContainer):
     localized_logger: Singleton[LocalizedLogger] = Singleton(LocalizedLogger, localization_manager, logger, logger_configuration)
     action_retrier: Singleton[ActionRetrier] = Singleton(ActionRetrier, retry_configuration)
     element_action_retrier: Singleton[ElementActionRetrier] = Singleton(ElementActionRetrier, retry_configuration)
-    conditional_wait: Factory[ConditionalWait] = Factory(ConditionalWait, timeout_configuration, application)
-    element_finder: Factory[ElementFinder] = Factory(ElementFinder, conditional_wait)
+    conditional_wait: Factory[ConditionalWait] = Factory(ConditionalWait, timeout_configuration, __self__)
+    element_finder: Factory[ElementFinder] = Factory(ElementFinder, localized_logger, conditional_wait)
 
 
 class Startup:
@@ -41,6 +43,8 @@ class Startup:
     def configure_services(application_provider: Callable, settings: dict = None) -> ServiceProvider:
         service_provider = ServiceProvider()
         settings = settings or json.loads(FileReader.get_resource_file("settings.json"))
-        service_provider.settings_file = Singleton(lambda: settings)
-        service_provider.application = Factory(application_provider)
+
+        service_provider.settings_file.override(Singleton(lambda: settings))
+        service_provider.application.override(Factory(application_provider))
+
         return service_provider

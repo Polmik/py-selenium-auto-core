@@ -20,12 +20,13 @@ class ActionRetrier:
                 result = function()
                 break
             except Exception as e:
-                if retry_attempts_left != 0 and self._is_exception_handled(exceptions_to_handle, e):
+                if retry_attempts_left != 0 and self._is_ignored_exception(e, exceptions_to_handle):
                     sleep(actual_interval)
                     retry_attempts_left -= 1
                 else:
                     raise e
         return result
 
-    def _is_exception_handled(self, handled_exceptions: list, exception: Exception) -> bool:
-        return type(exception) in handled_exceptions
+    @staticmethod
+    def _is_ignored_exception(ex: Exception, exceptions_to_ignore: list) -> bool:
+        return any(map(lambda exti: isinstance(ex, exti), exceptions_to_ignore))

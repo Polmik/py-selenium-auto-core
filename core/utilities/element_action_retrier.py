@@ -11,8 +11,8 @@ class ElementActionRetrier(ActionRetrier):
     def __init__(self, retry_configuration: RetryConfiguration):
         super().__init__(retry_configuration)
         self.handled_exceptions = [
-            type(StaleElementReferenceException),
-            type(InvalidElementStateException),
+            StaleElementReferenceException,
+            InvalidElementStateException,
         ]
 
     def do_with_retry(self, function: Callable, handled_exceptions: Optional[list] = None) -> Any:

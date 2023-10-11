@@ -16,13 +16,13 @@ class LocalizedLogger:
         self.configuration = logger_configuration
 
     def info_element_action(self, element_type: str, element_name: str, message_key: str, *args):
-        localized_message = self.__localization_manager.get_localized_message(message_key, args)
+        localized_message = self.__localization_manager.get_localized_message(message_key, *args)
         self.__logger.info(f"{element_type} '{element_name}' :: {localized_message}")
 
     def info(self, message_key: str, *args):
-        localized_message = self.__localization_manager.get_localized_message(message_key, args)
+        localized_message = self.__localization_manager.get_localized_message(message_key, *args)
         self.__logger.info(localized_message)
 
     def debug(self, message_key: str, *args):
-        localized_message = self.__localization_manager.get_localized_message(message_key, args)
+        localized_message = self.__localization_manager.get_localized_message(message_key, *args)
         self.__logger.debug(localized_message)
