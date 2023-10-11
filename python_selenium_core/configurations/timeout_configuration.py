@@ -17,13 +17,5 @@ class TimeoutConfiguration:
         return self.__timeout.get("timeoutPollingInterval")
 
     @property
-    def script(self) -> float:
-        return self.__timeout.get("timeoutCommand")
-
-    @property
-    def page_load(self) -> float:
-        return self.__timeout.get("timeout_page_load")
-
-    @property
     def command(self) -> float:
         return self.__timeout.get("timeout_command")

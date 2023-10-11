@@ -1,8 +1,8 @@
 from typing import Callable
 
-from core.elements.element_cache_handler import ElementCacheHandler
-from core.locator.locator import Locator
-from core.waitings.conditional_wait import ConditionalWait
+from python_selenium_core.elements.element_cache_handler import ElementCacheHandler
+from python_selenium_core.locator.locator import Locator
+from python_selenium_core.waitings.conditional_wait import ConditionalWait
 
 
 class CachedElementStateProvider:

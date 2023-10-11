@@ -1,6 +1,6 @@
 import os
 
-from core import ROOT_PATH_CORE
+from python_selenium_core import ROOT_PATH_CORE
 
 
 class FileReader:

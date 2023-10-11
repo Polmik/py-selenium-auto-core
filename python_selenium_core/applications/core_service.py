@@ -2,8 +2,8 @@ from typing import Callable
 
 from dependency_injector import providers
 
-from core.applications.application import Application
-from core.applications.startup import ServiceProvider, Startup
+from python_selenium_core.applications.application import Application
+from python_selenium_core.applications.startup import ServiceProvider, Startup
 
 
 #class CoreService(Application):

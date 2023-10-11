@@ -4,20 +4,20 @@ from typing import Any, Callable
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
-from core.applications.application import Application
-from core.configurations.element_cache_configuration import ElementCacheConfiguration
-from core.configurations.logger_configuration import LoggerConfiguration
-from core.elements.constants.element_state import ElementState
-from core.elements.element_cache_handler import ElementCacheHandler
-from core.elements.element_factory import ElementFactory
-from core.elements.element_finder import ElementFinder
-from core.elements.element_state_provider import ElementStateProvider
-from core.localization.localization_manager import LocalizationManager
-from core.localization.localized_logger import LocalizedLogger
-from core.locator.locator import Locator
-from core.logging.logger import Logger
-from core.utilities.action_retrier import ActionRetrier
-from core.waitings.conditional_wait import ConditionalWait
+from python_selenium_core.applications.application import Application
+from python_selenium_core.configurations.element_cache_configuration import ElementCacheConfiguration
+from python_selenium_core.configurations.logger_configuration import LoggerConfiguration
+from python_selenium_core.elements.constants.element_state import ElementState
+from python_selenium_core.elements.element_cache_handler import ElementCacheHandler
+from python_selenium_core.elements.element_factory import ElementFactory
+from python_selenium_core.elements.element_finder import ElementFinder
+from python_selenium_core.elements.element_state_provider import ElementStateProvider
+from python_selenium_core.localization.localization_manager import LocalizationManager
+from python_selenium_core.localization.localized_logger import LocalizedLogger
+from python_selenium_core.locator.locator import Locator
+from python_selenium_core.logging.logger import Logger
+from python_selenium_core.utilities.action_retrier import ActionRetrier
+from python_selenium_core.waitings.conditional_wait import ConditionalWait
 
 
 class CoreElement(abc.ABC):

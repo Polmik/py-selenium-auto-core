@@ -4,19 +4,19 @@ from typing import Callable
 from dependency_injector import containers
 from dependency_injector.providers import Singleton, Factory, Self
 
-from core.applications.application import Application
-from core.configurations.element_cache_configuration import ElementCacheConfiguration
-from core.configurations.logger_configuration import LoggerConfiguration
-from core.configurations.retry_configuration import RetryConfiguration
-from core.configurations.timeout_configuration import TimeoutConfiguration
-from core.localization.localization_manager import LocalizationManager
-from core.localization.localized_logger import LocalizedLogger
-from core.logging.logger import Logger
-from core.utilities.action_retrier import ActionRetrier
-from core.utilities.element_action_retrier import ElementActionRetrier
-from core.utilities.file_reader import FileReader
-from core.elements.element_finder import ElementFinder
-from core.waitings.conditional_wait import ConditionalWait
+from python_selenium_core.applications.application import Application
+from python_selenium_core.configurations.element_cache_configuration import ElementCacheConfiguration
+from python_selenium_core.configurations.logger_configuration import LoggerConfiguration
+from python_selenium_core.configurations.retry_configuration import RetryConfiguration
+from python_selenium_core.configurations.timeout_configuration import TimeoutConfiguration
+from python_selenium_core.localization.localization_manager import LocalizationManager
+from python_selenium_core.localization.localized_logger import LocalizedLogger
+from python_selenium_core.logging.logger import Logger
+from python_selenium_core.utilities.action_retrier import ActionRetrier
+from python_selenium_core.utilities.element_action_retrier import ElementActionRetrier
+from python_selenium_core.utilities.file_reader import FileReader
+from python_selenium_core.elements.element_finder import ElementFinder
+from python_selenium_core.waitings.conditional_wait import ConditionalWait
 
 
 class ServiceProvider(containers.DeclarativeContainer):

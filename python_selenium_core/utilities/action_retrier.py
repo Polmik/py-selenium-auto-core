@@ -1,7 +1,7 @@
 from time import sleep
 from typing import Any, Callable
 
-from core.configurations.retry_configuration import RetryConfiguration
+from python_selenium_core.configurations.retry_configuration import RetryConfiguration
 
 
 class ActionRetrier:

@@ -3,8 +3,8 @@ import logging
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.webdriver import WebDriver
 
-from core.applications.application import Application
-from core.configurations.timeout_configuration import TimeoutConfiguration
+from python_selenium_core.applications.application import Application
+from python_selenium_core.configurations.timeout_configuration import TimeoutConfiguration
 
 
 class ChromeApplication(Application):

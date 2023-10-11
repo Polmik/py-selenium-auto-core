@@ -1,6 +1,6 @@
-from core.configurations.logger_configuration import LoggerConfiguration
-from core.localization.localization_manager import LocalizationManager
-from core.logging.logger import Logger
+from python_selenium_core.configurations.logger_configuration import LoggerConfiguration
+from python_selenium_core.localization.localization_manager import LocalizationManager
+from python_selenium_core.logging.logger import Logger
 
 
 class LocalizedLogger:

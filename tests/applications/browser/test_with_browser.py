@@ -3,8 +3,8 @@ from typing import Callable
 from selenium.common import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from core.applications.startup import ServiceProvider, Startup
-from core.logging.logger import Logger
+from python_selenium_core.applications.startup import ServiceProvider, Startup
+from python_selenium_core.logging.logger import Logger
 from tests.applications.browser.browser_service import BrowserService
 
 

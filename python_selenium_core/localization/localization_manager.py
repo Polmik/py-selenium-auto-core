@@ -1,10 +1,10 @@
 import json
 from typing import Optional
 
-from core import ROOT_PATH_CORE
-from core.configurations.logger_configuration import LoggerConfiguration
-from core.logging.logger import Logger
-from core.utilities.file_reader import FileReader
+from python_selenium_core import ROOT_PATH_CORE
+from python_selenium_core.configurations.logger_configuration import LoggerConfiguration
+from python_selenium_core.logging.logger import Logger
+from python_selenium_core.utilities.file_reader import FileReader
 
 
 class LocalizationManager:
