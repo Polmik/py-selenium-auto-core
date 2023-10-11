@@ -1,6 +1,6 @@
 from core.applications.core_service import CoreService
 from core.applications.startup import ServiceProvider
-from core.tests.applications.browser.chrome_application import ChromeApplication
+from tests.applications.browser.chrome_application import ChromeApplication
 
 
 class BrowserService(CoreService):

@@ -1,7 +1,7 @@
 import pytest
 
-from core.tests.applications.browser.browser_service import BrowserService
-from core.tests.applications.browser.test_with_browser import TestWithBrowser
+from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.test_with_browser import TestWithBrowser
 
 
 class TestApplicationNotStarted(TestWithBrowser):

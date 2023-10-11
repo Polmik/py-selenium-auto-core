@@ -1,14 +1,12 @@
 from typing import Callable
 
 import pytest
-from selenium.common import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from core.locator.locator import Locator
-from core.logging.logger import Logger
-from core.tests.applications.browser.browser_service import BrowserService
-from core.tests.applications.browser.test_with_browser import TestWithBrowser
+from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.test_with_browser import TestWithBrowser
 from core.waitings.conditional_wait import ConditionalWait
 
 

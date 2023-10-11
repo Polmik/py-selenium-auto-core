@@ -1,12 +1,11 @@
 from typing import Callable
 
-from dependency_injector.providers import Factory
 from selenium.common import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from core.applications.startup import ServiceProvider, Startup
 from core.logging.logger import Logger
-from core.tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.browser_service import BrowserService
 
 
 class TestWithBrowser:
