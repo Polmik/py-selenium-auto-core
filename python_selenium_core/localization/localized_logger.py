@@ -23,6 +23,18 @@ class LocalizedLogger:
         localized_message = self.__localization_manager.get_localized_message(message_key, *args)
         self.__logger.info(localized_message)
 
-    def debug(self, message_key: str, *args):
+    def debug(self, message_key: str, exception: Exception = None, *args):
         localized_message = self.__localization_manager.get_localized_message(message_key, *args)
-        self.__logger.debug(localized_message)
+        self.__logger.debug(localized_message, exc_info=exception)
+
+    def warn(self, message_key: str, *args):
+        localized_message = self.__localization_manager.get_localized_message(message_key, *args)
+        self.__logger.warn(localized_message)
+
+    def error(self, message_key: str, *args):
+        localized_message = self.__localization_manager.get_localized_message(message_key, *args)
+        self.__logger.error(localized_message)
+
+    def fatal(self, message_key: str, exception: Exception = None, *args):
+        localized_message = self.__localization_manager.get_localized_message(message_key, *args)
+        self.__logger.fatal(localized_message, exc_info=exception)

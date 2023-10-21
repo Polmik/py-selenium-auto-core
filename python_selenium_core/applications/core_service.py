@@ -6,39 +6,44 @@ from python_selenium_core.applications.application import Application
 from python_selenium_core.applications.startup import ServiceProvider, Startup
 
 
-#class CoreService(Application):
 class CoreService:
 
     _app_container: Application = None
-    _startup_container: ServiceProvider = None
+    _service_provider_container: ServiceProvider = None
 
-    @staticmethod
-    def _is_application_started() -> bool:
+    @classmethod
+    def _is_application_started(cls) -> bool:
         return CoreService._app_container is not None and CoreService._app_container.is_started
 
-    @staticmethod
-    def set_service_provider(startup: ServiceProvider):
-        CoreService._startup_container = startup
+    @classmethod
+    def set_service_provider(cls, startup: ServiceProvider):
+        CoreService._service_provider_container = startup
 
-    @staticmethod
-    def get_service_provider(application_provider: Callable, service_provider: ServiceProvider = None) -> ServiceProvider:
-        if CoreService._startup_container is None:
+    @classmethod
+    def get_service_provider(
+            cls,
+            application_provider: Callable,
+            service_provider: ServiceProvider = None
+    ) -> ServiceProvider:
+        if CoreService._service_provider_container is None:
             if service_provider is None:
-                CoreService._startup_container = Startup.configure_services(application_provider)
-                CoreService._startup_container.application = providers.Factory(application_provider)
+                CoreService._service_provider_container = Startup.configure_services(application_provider)
+                CoreService._service_provider_container.application = providers.Factory(application_provider)
             else:
-                CoreService._startup_container = service_provider
-        return CoreService._startup_container
+                CoreService._service_provider_container = service_provider
+        return CoreService._service_provider_container
 
-    @staticmethod
-    def get_application(application_provider: Callable, service_provider: ServiceProvider = None):
+    @classmethod
+    def get_application(cls, application_provider: Callable, service_provider: ServiceProvider = None):
         if not CoreService._is_application_started():
             CoreService._app_container = application_provider(
-                CoreService.get_service_provider(lambda x: CoreService.get_application(application_provider, service_provider), service_provider)
+                CoreService.get_service_provider(
+                    lambda x: CoreService.get_application(application_provider, service_provider), service_provider
+                )
             )
         return CoreService._app_container
 
-    @staticmethod
-    def set_application(application: Application):
+    @classmethod
+    def set_application(cls, application: Application):
         CoreService._app_container = application
 
