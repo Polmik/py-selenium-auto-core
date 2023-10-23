@@ -1,6 +1,6 @@
 import json
+import os
 from typing import Optional
-
 from python_selenium_core import ROOT_PATH_CORE
 from python_selenium_core.configurations.logger_configuration import LoggerConfiguration
 from python_selenium_core.logging.logger import Logger
@@ -8,7 +8,8 @@ from python_selenium_core.utilities.file_reader import FileReader
 
 
 class LocalizationManager:
-    _lang_resource = "localization\\{0}.json"
+    _lang_resource_dir = "localization"
+    _lang_resource_file = "{0}.json"
     logger = None
 
     def __init__(self, logger_configuration: LoggerConfiguration, logger: Logger, root_path: Optional[str] = None):
@@ -25,5 +26,5 @@ class LocalizationManager:
         return message_key
 
     def __get_localization_file(self, language: str, root_path: str) -> dict:
-        resource_name = self._lang_resource.format(language)
+        resource_name = os.path.join(self._lang_resource_dir, self._lang_resource_file.format(language))
         return json.loads(FileReader.get_resource_file(resource_name, root_path))
