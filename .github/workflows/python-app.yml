@@ -38,4 +38,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest -k "not test_should_be_possible_to_use_condition_with_driver and not test_should_not_throw_on_wait_with_handled_exception and not test_should_throw_on_wait_with_unhandled_exception and not test_should_be_possible_to_use_conditional_wait_with_element_finder"
+        pytest

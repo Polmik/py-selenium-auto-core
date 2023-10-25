@@ -1,7 +1,9 @@
 import logging
 
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.webdriver import WebDriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 from python_selenium_core.applications.application import Application
 from python_selenium_core.configurations.timeout_configuration import TimeoutConfiguration
@@ -12,13 +14,17 @@ class ChromeApplication(Application):
     def __init__(self, timeout_configuration: TimeoutConfiguration):
         for log_name in [
             'selenium.webdriver.remote.remote_connection',
+            'selenium.webdriver.common.selenium_manager',
             'urllib3.connectionpool',
         ]:
             logger = logging.getLogger(log_name)
             logger.disabled = True
         options = Options()
-        options.headless = False
-        self._driver = WebDriver(options=options)
+        service = Service()
+        driver_manager = ChromeDriverManager(driver_version=None)
+        service.path = driver_manager.install()
+        options.headless = True
+        self._driver = WebDriver(options=options, service=service)
         self.implicit_wait = timeout_configuration.implicit
         self.driver.implicitly_wait(self.implicit_wait)
 
