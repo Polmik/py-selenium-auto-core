@@ -12,7 +12,14 @@ class RootPathHelper:
 
     @staticmethod
     def calling_root_path():
+        # TODO: workaround to get calling root path, because pytest runs from the root dir
+        if os.environ.get("calling_root_path"):
+            return os.environ.get("calling_root_path")
         return RootPathHelper._find_root_path(os.getcwd())
+
+    @staticmethod
+    def current_root_path(path: str):
+        return RootPathHelper._find_root_path(path)
 
     @staticmethod
     def _find_root_path(path: str) -> str:
