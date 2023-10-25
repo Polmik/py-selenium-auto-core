@@ -1,21 +1,26 @@
-class TimeoutConfiguration:
+from __future__ import annotations
 
-    def __init__(self, settings_file):
-        self.__settings_file = settings_file
-        self.__timeout = self.__settings_file.get("timeouts")
+from python_selenium_core.configurations.base_configurations import BaseConfiguration
+from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
+
+
+class TimeoutConfiguration(BaseConfiguration):
+
+    def __init__(self, settings: dict | JsonSettingsFile):
+        super().__init__(settings, "timeouts")
 
     @property
     def implicit(self) -> float:
-        return self.__timeout.get("timeoutImplicit")
+        return self._node.get_as_float("timeoutImplicit")
 
     @property
     def condition(self) -> float:
-        return self.__timeout.get("timeoutCondition")
+        return self._node.get_as_float("timeoutCondition")
 
     @property
     def polling_interval(self) -> float:
-        return self.__timeout.get("timeoutPollingInterval")
+        return self._node.get_as_float("timeoutPollingInterval")
 
     @property
     def command(self) -> float:
-        return self.__timeout.get("timeout_command")
+        return self._node.get_as_float("timeout_command")

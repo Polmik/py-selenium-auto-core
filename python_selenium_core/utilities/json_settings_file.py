@@ -1,0 +1,50 @@
+from __future__ import annotations
+
+import json
+from typing import overload, Any
+
+from python_selenium_core.utilities.environment_configuration import EnvironmentConfiguration
+from python_selenium_core.utilities.file_reader import FileReader
+
+
+class JsonSettingsFile:
+
+    @overload
+    def __init__(self, setting_json: dict):
+        ...
+
+    @overload
+    def __init__(self, setting_name: str):
+        ...
+
+    @overload
+    def __init__(self, setting_name: str, root_path: str):
+        ...
+
+    def __init__(self, setting_name: str | dict = None, root_path: str = None):
+        if not setting_name:
+            raise ValueError("SettingName[str | dict] couldn't be None")
+        if isinstance(setting_name, dict):
+            self.setting_json: dict = setting_name
+        else:
+            self.setting_json: dict = json.loads(FileReader.get_resource_file(setting_name, root_path))
+
+    def get(self, key: str, default=None) -> Any:
+        env_var = self._get_environment_value(key)
+        if env_var is None:
+            return self.setting_json.get(key, default)
+        return env_var
+
+    def get_as_int(self, key: str, default=None) -> int:
+        return int(self.get(key, default))
+
+    def get_as_bool(self, key: str, default=None) -> bool:
+        return bool(self.get(key, default))
+
+    def get_as_float(self, key: str, default=None) -> float:
+        return float(self.get(key, default))
+
+    @staticmethod
+    def _get_environment_value(key: str) -> Any:
+        return EnvironmentConfiguration.get_variable(key)
+

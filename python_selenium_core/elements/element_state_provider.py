@@ -1,4 +1,3 @@
-import logging
 from typing import Callable
 
 from selenium.webdriver.remote.webelement import WebElement

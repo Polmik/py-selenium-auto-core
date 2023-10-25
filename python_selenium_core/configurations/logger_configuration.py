@@ -1,15 +1,20 @@
-class LoggerConfiguration:
+from __future__ import annotations
+
+from python_selenium_core.configurations.base_configurations import BaseConfiguration
+from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
+
+
+class LoggerConfiguration(BaseConfiguration):
 
     __default_language = "en"
 
-    def __init__(self, settings_file):
-        self.__settings_file = settings_file
-        self.__logger = self.__settings_file.get("logger")
+    def __init__(self, settings: dict | JsonSettingsFile):
+        super().__init__(settings, "logger")
 
     @property
     def language(self) -> str:
-        return self.__logger.get("language", self.__default_language)
+        return self._node.get("language", "en")
 
     @property
     def log_page_source(self) -> bool:
-        return self.__logger.get("logPageSource", True)
+        return self._node.get_as_bool("logPageSource", True)

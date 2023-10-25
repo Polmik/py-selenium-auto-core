@@ -1,4 +1,3 @@
-import json
 from typing import Callable
 
 from dependency_injector import containers
@@ -13,16 +12,19 @@ from python_selenium_core.localization.localization_manager import LocalizationM
 from python_selenium_core.localization.localized_logger import LocalizedLogger
 from python_selenium_core.logging.logger import Logger
 from python_selenium_core.utilities.action_retrier import ActionRetrier
+from python_selenium_core.utilities.root_path_helper import RootPathHelper
 from python_selenium_core.utilities.element_action_retrier import ElementActionRetrier
+from python_selenium_core.utilities.environment_configuration import EnvironmentConfiguration
 from python_selenium_core.utilities.file_reader import FileReader
 from python_selenium_core.elements.element_finder import ElementFinder
+from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
 from python_selenium_core.waitings.conditional_wait import ConditionalWait
 
 
 class ServiceProvider(containers.DeclarativeContainer):
     __self__ = Self()
 
-    settings_file: Singleton[dict] = Singleton(lambda: {})
+    settings_file: Singleton[JsonSettingsFile] = Singleton(lambda: JsonSettingsFile({}))
     application: Factory[Application] = Factory(Application)
     logger: Singleton[Logger] = Singleton(Logger)
     element_cache_configuration: Singleton[ElementCacheConfiguration] = Singleton(ElementCacheConfiguration, settings_file)
@@ -40,11 +42,20 @@ class ServiceProvider(containers.DeclarativeContainer):
 class Startup:
 
     @staticmethod
-    def configure_services(application_provider: Callable, settings: dict = None) -> ServiceProvider:
+    def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
         service_provider = ServiceProvider()
-        settings = settings or json.loads(FileReader.get_resource_file("settings.json"))
+        settings = settings or Startup.get_settings()
 
         service_provider.settings_file.override(Singleton(lambda: settings))
         service_provider.application.override(Factory(application_provider))
 
         return service_provider
+
+    @staticmethod
+    def get_settings() -> JsonSettingsFile:
+        profile_name = EnvironmentConfiguration.get_variable("profile")
+        settings_profile = "settings.json" if not profile_name else f"settings.{profile_name}.json"
+        Logger.debug(f"Get settings from: {settings_profile}")
+        if FileReader.is_resource_file_exist(settings_profile, root_path=RootPathHelper.calling_root_path()):
+            return JsonSettingsFile(setting_name=settings_profile, root_path=RootPathHelper.calling_root_path())
+        return JsonSettingsFile(setting_name=settings_profile, root_path=RootPathHelper.executing_root_path())

@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from python_selenium_core.applications.startup import ServiceProvider, Startup
 from python_selenium_core.logging.logger import Logger
+from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
 from tests.applications.browser.browser_service import BrowserService
 
 
@@ -35,6 +36,6 @@ class TestWithBrowser:
 class CustomStartup(Startup):
 
     @staticmethod
-    def configure_services(application_provider: Callable, settings: dict = None) -> ServiceProvider:
+    def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
         service_provider = Startup.configure_services(application_provider, settings)
         return service_provider
