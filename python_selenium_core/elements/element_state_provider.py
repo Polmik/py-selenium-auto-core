@@ -10,6 +10,9 @@ from python_selenium_core.waitings.conditional_wait import ConditionalWait
 
 
 class ElementStateProvider:
+    """Provides ability to define element's state (whether it is displayed, exist or not)
+    Also provides respective positive and negative waiting methods
+    """
 
     def __init__(
             self,
@@ -24,53 +27,126 @@ class ElementStateProvider:
         self.__log_element_state = log_element_state
 
     def is_displayed(self) -> bool:
+        """Gets element's displayed state: true if displayed and false otherwise"""
         return self.wait_for_displayed(0)
 
     def is_exist(self) -> bool:
+        """Gets element's exist state: true if element exists in DOM (without visibility check) and false otherwise"""
         return self.wait_for_exist(0)
 
     def is_enabled(self) -> bool:
+        """Gets element's Enabled state, which means element is Enabled and does not have "disabled" class:
+        true if enabled, false otherwise.
+        """
         return self.wait_for_enabled(0)
 
     def is_clickable(self) -> bool:
+        """Gets element's clickable state, which means element is displayed and enabled:
+        true if element is clickable, false otherwise
+        """
         return self.__is_element_clickable(0, True)
 
     def wait_for_displayed(self, timeout: float = None) -> bool:
+        """Waits for element is displayed on the page
+
+        Args:
+            timeout: Timeout for waiting. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            True if element displayed after waiting, false otherwise
+        """
         def _predicate():
             return self.__is_any_element_found(timeout, ElementState.Displayed)
         return self.__do_and_log_wait_for_state(_predicate, "displayed", timeout)
 
     def wait_for_not_displayed(self, timeout: float = None) -> bool:
+        """Waits for element is not displayed on the page
+
+        Args:
+            timeout: Timeout for waiting. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            True if element does not display after waiting, false otherwise
+        """
         def _predicate():
             return self.__conditional_wait.wait_for_condition(lambda: not self.is_displayed(), timeout)
         return self.__do_and_log_wait_for_state(_predicate, "not.displayed", timeout)
 
     def wait_for_exist(self, timeout: float = None) -> bool:
+        """Waits for element exists in DOM (without visibility check)
+
+        Args:
+            timeout: Timeout for waiting. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            True if element exist after waiting, false otherwise
+        """
         def _predicate():
             return self.__is_any_element_found(timeout, ElementState.ExistsInAnyState)
         return self.__do_and_log_wait_for_state(_predicate, "exist", timeout)
 
     def wait_for_not_exist(self, timeout: float = None) -> bool:
+        """Waits for element does not exist in DOM (without visibility check)
+
+        Args:
+            timeout: Timeout for waiting. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            True if element does not exist after waiting, false otherwise
+        """
         def _predicate():
             return self.__conditional_wait.wait_for_condition(lambda: not self.is_exist(), timeout)
         return self.__do_and_log_wait_for_state(_predicate, "not.exist", timeout)
 
     def wait_for_enabled(self, timeout: float = None) -> bool:
+        """Waits for element is enabled state which means element is Enabled and does not have "disabled" class
+
+        Args:
+            timeout: Timeout for waiting. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            True if enabled, false otherwise
+
+        Exception:
+            NoSuchElementException: Throws when timeout exceeded and element not found
+        """
         def _predicate():
             return self.__is_element_in_desired_state(lambda e: self.__is_element_enabled(e), "ENABLED", timeout)
         return self.__do_and_log_wait_for_state(_predicate, "enabled", timeout)
 
     def wait_for_not_enabled(self, timeout: float = None) -> bool:
+        """Waits for element is not enabled state which means element is not Enabled or does have "disabled" class
+
+        Args:
+            timeout: Timeout for waiting. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            True if not enabled, false otherwise
+
+        Exception:
+            NoSuchElementException: Throws when timeout exceeded and element not found
+        """
         def _predicate():
             return self.__is_element_in_desired_state(lambda e: not self.__is_element_enabled(e), "NOT ENABLED", timeout)
         return self.__do_and_log_wait_for_state(_predicate, "not.enabled", timeout)
 
     def wait_for_clickable(self, timeout: float = None):
+        """Waits for element to become clickable which means element is displayed and enabled
+
+        Args:
+            timeout: Timeout for waiting. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            True if not enabled, false otherwise
+
+        Exception:
+            TimeoutException: Throws when timeout exceeded and element is not clickable
+        """
         condition_key = "loc.el.state.clickable"
         try:
             self.__log_element_state("loc.wait.for.state", condition_key)
             self.__is_element_clickable(timeout, False)
-        except:
+        except Exception:
             self.__log_element_state("loc.wait.for.state.failed", condition_key)
             raise
 

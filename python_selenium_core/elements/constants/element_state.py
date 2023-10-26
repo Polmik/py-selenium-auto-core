@@ -2,5 +2,7 @@ import enum
 
 
 class ElementState(enum.Enum):
-    Displayed = 1
-    ExistsInAnyState = 2
+    """Possible states of element"""
+
+    Displayed = enum.auto()
+    ExistsInAnyState = enum.auto()

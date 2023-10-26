@@ -8,7 +8,13 @@ from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
 class BaseConfiguration(abc.ABC):
 
     def __init__(self, settings: dict | JsonSettingsFile, node_name: str):
-        node = self._dict_to_json_settings(settings).get(node_name)
+        """Instantiates class using JsonSettingsFile or dict with general settings
+
+        Args:
+            settings: Settings file
+            node_name: Key for getting information from Json
+        """
+        node: dict = self._dict_to_json_settings(settings).get(node_name)
         self._node: JsonSettingsFile = JsonSettingsFile(node)
 
     @classmethod

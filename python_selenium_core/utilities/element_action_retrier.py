@@ -7,9 +7,17 @@ from python_selenium_core.utilities.action_retrier import ActionRetrier
 
 
 class ElementActionRetrier(ActionRetrier):
+    """This class is used for do some action with retry when HandledExceptions occures"""
 
     def __init__(self, retry_configuration: RetryConfiguration):
+        """RetryConfiguration constructor
+
+        Args:
+            retry_configuration (RetryConfiguration): Retry configurations
+        """
         super().__init__(retry_configuration)
+
+        """Exceptions to be ignored during action retrying"""
         self.handled_exceptions = [
             StaleElementReferenceException,
             InvalidElementStateException,

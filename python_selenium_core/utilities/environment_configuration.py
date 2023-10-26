@@ -2,9 +2,18 @@ import os
 
 
 class EnvironmentConfiguration:
+    """Environment variables reader"""
 
     @staticmethod
-    def get_variable(env_key: str):
+    def get_variable(env_key: str) -> str:
+        """Gets value of environment variable by key
+
+        Args:
+            env_key (str): Environment variable key
+
+        Returns:
+            Value of environment variable
+        """
         variables = (
             os.environ.get(env_key),
             os.environ.get(env_key.lower()),

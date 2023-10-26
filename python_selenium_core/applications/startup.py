@@ -22,6 +22,7 @@ from python_selenium_core.waitings.conditional_wait import ConditionalWait
 
 
 class ServiceProvider(containers.DeclarativeContainer):
+    """Container that allows to resolve dependencies for all services in the library"""
     __self__ = Self()
 
     settings_file: Singleton[JsonSettingsFile] = Singleton(lambda: JsonSettingsFile({}))
@@ -43,6 +44,17 @@ class Startup:
 
     @staticmethod
     def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
+        """Method to configure dependencies for services of the current library
+
+        Args:
+            application_provider: Provider for interacting with the application
+                Example: lambda: Application.get_application()
+            settings: File with settings for configuration of dependencies
+                Pass the result of get_settings() if you need to get settings from the another package
+
+        Returns:
+            Configured ServiceProvider
+        """
         service_provider = ServiceProvider()
         settings = settings or Startup.get_settings()
 
@@ -53,6 +65,14 @@ class Startup:
 
     @staticmethod
     def get_settings() -> JsonSettingsFile:
+        """Provides a JsonSettingsFile with settings. Value is set in configure_services
+        Otherwise, will use default JSON settings file with name: "settings.{profile}.json".
+        Default settings will look for the resource file in resource file (FileReader);
+         If not found, will look for resource in the calling package of this method
+
+        Returns:
+            An instance of settings
+        """
         profile_name = EnvironmentConfiguration.get_variable("profile")
         settings_profile = "settings.json" if not profile_name else f"settings.{profile_name}.json"
         Logger.debug(f"Get settings from: {settings_profile}")

@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
@@ -21,37 +21,48 @@ from python_selenium_core.waitings.conditional_wait import ConditionalWait
 
 
 class CoreElement(abc.ABC):
-    _element_cache_handler: ElementCacheHandler = None
+    """Describes behavior of any UI element"""
 
     def __init__(self, locator: Locator, name: str, element_state: ElementState):
+        """CoreElement constructor
+
+        Args:
+            locator: Unique locator of element
+            name: Unique name of element
+            element_state: Element state
+        """
         self.locator = locator
         self.name = name
-        self.element_state = element_state
+        self._element_state = element_state
+        self._element_cache_handler: Optional[ElementCacheHandler] = None
 
     @property
     def state(self):
+        """Gets element state"""
         if self.cache_configuration.is_enabled:
             raise NotImplementedError
-        return ElementStateProvider(self.locator, self.conditional_wait, self.finder)
+        return ElementStateProvider(self.locator, self.conditional_wait, self.finder, self.log_element_state)
 
     @property
     def visual(self):
+        """Gets element visual state"""
         raise NotImplementedError
 
     @property
     def cache(self) -> ElementCacheHandler:
+        """Gets element cache handler"""
         if self._element_cache_handler is None:
-            self._element_cache_handler = ElementCacheHandler(self.locator, self.name, self.element_state, self.finder)
+            self._element_cache_handler = ElementCacheHandler(self.locator, self.name, self._element_state, self.finder)
         return self._element_cache_handler
 
     @property
     @abc.abstractmethod
-    def application(self) -> Application:
+    def action_retrier(self) -> ActionRetrier:
         raise NotImplementedError("Abstract")
 
     @property
     @abc.abstractmethod
-    def action_retrier(self) -> ActionRetrier:
+    def application(self) -> Application:
         raise NotImplementedError("Abstract")
 
     @property
@@ -115,6 +126,7 @@ class CoreElement(abc.ABC):
         return predicate
 
     def click(self):
+        """Clicks the element"""
         self.log_element_action("loc.clicking")
         self.do_with_retry(lambda: self.get_element().click())
 
@@ -125,18 +137,30 @@ class CoreElement(abc.ABC):
         raise NotImplementedError
 
     def get_attribute(self, attr) -> str:
+        """Gets element attribute value by its name"""
         self.log_element_action("loc.el.getattr", attr)
         value = self.do_with_retry(lambda: self.get_element().get_attribute(attr))
         self.log_element_action("loc.el.attr.value", attr, value)
         return value
 
     def get_element(self, timeout: float = None) -> WebElement:
+        """Finds current element by specified locator
+
+        Args:
+            timeout: Timeout to find element. Default: Configurations.TimeoutConfiguration.condition
+
+        Returns:
+            Instance of WebElement if found
+
+        Exception:
+            NoSuchElementException: Thrown when no elements found
+        """
         try:
             if self.cache_configuration.is_enabled:
                 return self.cache.get_element(timeout)
             return self.finder.find_element(
                 locator=self.locator,
-                state=self.element_state,
+                state=self._element_state,
                 timeout=timeout,
                 name=self.name
             )
@@ -154,12 +178,14 @@ class CoreElement(abc.ABC):
 
     @property
     def text(self) -> str:
+        """Gets element text"""
         self.log_element_action("loc.get.text")
         text = self.do_with_retry(lambda: self.get_element().text)
         self.log_element_action("loc.text.value", text)
         return text
 
     def send_keys(self, value) -> None:
+        """Sends keys to element"""
         self.log_element_action("loc.text.sending.keys", value)
         self.do_with_retry(lambda: self.get_element().send_keys(value))
 

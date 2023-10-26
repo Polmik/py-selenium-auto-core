@@ -4,6 +4,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 class DesiredState:
+    """Defines desired state for element with ability to handle exceptions"""
 
     def __init__(self, function_condition: Callable[[WebElement], bool], state_name: str):
         self.element_state_condition: Callable[[WebElement], bool] = function_condition

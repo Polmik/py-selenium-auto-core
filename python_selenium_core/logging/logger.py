@@ -2,13 +2,17 @@ import logging
 import os
 
 from pathlib import Path
+from typing import Optional
 
 
 class Logger:
+    """This class is using for a creating extended log. It implements a Singleton pattern"""
+
     __log = None
 
     @classmethod
     def _instance(cls):
+        """Gets Logger instance"""
         if cls.__log is None:
             cls.__log = logging.getLogger()
             cls.__configure_logger()
@@ -16,26 +20,54 @@ class Logger:
 
     @classmethod
     def info(cls, msg):
+        """Log info message
+
+        Args:
+            msg: Message
+        """
         cls._instance().info(msg)
 
     @classmethod
-    def debug(cls, msg, exc_info: Exception = None):
+    def debug(cls, msg, exc_info: Optional[Exception] = None):
+        """Log debug message and optional exception
+
+        Args:
+            msg: Message
+            exc_info: Exception
+        """
         cls._instance().debug(msg, exc_info=exc_info)
 
     @classmethod
     def warn(cls, msg):
-        cls._instance().warn(msg)
+        """Log warning message
+
+        Args:
+            msg: Message
+        """
+        cls._instance().warning(msg)
 
     @classmethod
     def error(cls, msg):
+        """Log error message
+
+        Args:
+            msg: Message
+        """
         cls._instance().error(msg)
 
     @classmethod
-    def fatal(cls, msg, exc_info: Exception = None):
+    def fatal(cls, msg, exc_info: Optional[Exception] = None):
+        """Log fatal message and exception
+
+        Args:
+            msg: Message
+            exc_info: Exception
+        """
         cls._instance().fatal(msg, exc_info=exc_info)
 
     @classmethod
     def __configure_logger(cls):
+        """Method to configure logging"""
         log_path = os.path.join(Path(__file__).parent.parent.parent, "Log\\log.log")
 
         if not os.path.exists(os.path.dirname(log_path)):
@@ -44,10 +76,12 @@ class Logger:
         cls.__log.setLevel(logging.DEBUG)
         formatter = logging.Formatter("%(asctime)s [%(name)s] [%(levelname)-5.5s]  %(message)s")
 
+        # Stream handler
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(formatter)
         stream_handler.setLevel(logging.DEBUG)
 
+        # File handler
         file_handler = logging.FileHandler(log_path)
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging.DEBUG)
