@@ -28,12 +28,20 @@ class ServiceProvider(containers.DeclarativeContainer):
     settings_file: Singleton[JsonSettingsFile] = Singleton(lambda: JsonSettingsFile({}))
     application: Factory[Application] = Factory(Application)
     logger: Singleton[Logger] = Singleton(Logger)
-    element_cache_configuration: Singleton[ElementCacheConfiguration] = Singleton(ElementCacheConfiguration, settings_file)
+    element_cache_configuration: Singleton[ElementCacheConfiguration] = Singleton(
+        ElementCacheConfiguration,
+        settings_file,
+    )
     logger_configuration: Singleton[LoggerConfiguration] = Singleton(LoggerConfiguration, settings_file)
     timeout_configuration: Singleton[TimeoutConfiguration] = Singleton(TimeoutConfiguration, settings_file)
     retry_configuration: Singleton[RetryConfiguration] = Singleton(RetryConfiguration, settings_file)
     localization_manager: Singleton[LocalizationManager] = Singleton(LocalizationManager, logger_configuration, logger)
-    localized_logger: Singleton[LocalizedLogger] = Singleton(LocalizedLogger, localization_manager, logger, logger_configuration)
+    localized_logger: Singleton[LocalizedLogger] = Singleton(
+        LocalizedLogger,
+        localization_manager,
+        logger,
+        logger_configuration,
+    )
     action_retrier: Singleton[ActionRetrier] = Singleton(ActionRetrier, retry_configuration)
     element_action_retrier: Singleton[ElementActionRetrier] = Singleton(ElementActionRetrier, retry_configuration)
     conditional_wait: Factory[ConditionalWait] = Factory(ConditionalWait, timeout_configuration, __self__)

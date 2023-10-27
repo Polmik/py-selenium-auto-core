@@ -127,7 +127,11 @@ class ElementStateProvider:
             NoSuchElementException: Throws when timeout exceeded and element not found
         """
         def _predicate():
-            return self.__is_element_in_desired_state(lambda e: not self.__is_element_enabled(e), "NOT ENABLED", timeout)
+            return self.__is_element_in_desired_state(
+                lambda e: not self.__is_element_enabled(e),
+                "NOT ENABLED",
+                timeout
+            )
         return self.__do_and_log_wait_for_state(_predicate, "not.enabled", timeout)
 
     def wait_for_clickable(self, timeout: float = None):

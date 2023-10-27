@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Any, List, overload
+from typing import Callable, Any, List
 
 from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -59,7 +59,7 @@ class ElementFinder:
             desired_state.is_throwing_no_such_element_exception = True
             return self.__find_elements(locator=locator, state=desired_state, timeout=timeout, name=name)[0]
 
-        raise ValueError(f"Incorrect type of state")
+        raise ValueError("Incorrect type of state")
 
     def find_elements(
             self,
@@ -91,7 +91,7 @@ class ElementFinder:
             return self.find_elements(locator, desired_state, timeout, name)
         elif isinstance(state, DesiredState):
             return self.__find_elements(locator, state, timeout, name)
-        raise ValueError(f"Incorrect type of state")
+        raise ValueError("Incorrect type of state")
 
     def _resolve_state(self, state: ElementState) -> DesiredState:
         if state.Displayed is ElementState.Displayed:

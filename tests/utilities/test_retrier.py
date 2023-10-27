@@ -39,12 +39,13 @@ class TestRetrier:
         duration = (time.time() - start_time) * 1000
         doubled_accuracy_polling_interval = self.polling_interval * 2 + self.accuracy
         assert self.polling_interval <= duration <= doubled_accuracy_polling_interval, \
-            f"Duration '{duration}' should be more than '{self.polling_interval}' and less than '{doubled_accuracy_polling_interval}'"
+            f"Duration '{duration}' should be more than '{self.polling_interval}' " \
+            f"and less than '{doubled_accuracy_polling_interval}'"
 
     def retrier_should_work_correct_times(self, exception, actual_attempts, function: Callable):
         try:
             function()
         except Exception as ex:
             assert isinstance(ex, exception)
-        assert actual_attempts[0] == self.retry_configuration.number + 1, "actual attempts count is not match to expected"
-
+        assert actual_attempts[0] == self.retry_configuration.number + 1, \
+            "actual attempts count is not match to expected"

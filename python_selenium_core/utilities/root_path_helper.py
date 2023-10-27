@@ -47,4 +47,3 @@ class RootPathHelper:
         if os.path.exists(os.path.join(new_path, RootPathHelper.init_filename)):
             return RootPathHelper._find_root_path(str(new_path))
         return path
-

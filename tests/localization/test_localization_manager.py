@@ -76,10 +76,14 @@ class TestLocalizationManager(TestWithoutApplication):
         os.environ["profile"] = "custom"
         self.setup_method()
         os.environ["profile"] = ""
-        assert self.clicking_value_ru == self.service_provider.localization_manager().get_localized_message(self.clicking_key)
+        assert self.clicking_value_ru == self.service_provider.localization_manager().get_localized_message(
+            self.clicking_key
+        )
 
     def test_possible_to_use_localization_manager_for_clicking(self):
-        assert self.clicking_value_en == self.service_provider.localization_manager().get_localized_message(self.clicking_key)
+        assert self.clicking_value_en == self.service_provider.localization_manager().get_localized_message(
+            self.clicking_key
+        )
 
     def test_possible_to_use_localization_manager_for_unknown(self):
         unknown_key = "loc.unknown.fake.key"
@@ -147,5 +151,3 @@ class TestLocalizationManager(TestWithoutApplication):
         localized_value = LocalizationManager(configuration, Logger()).get_localized_message(message_key, *params)
         assert message_key != localized_value, "Value should be defined in resource files"
         assert len(localized_value) > 0, "Value should not be empty"
-
-

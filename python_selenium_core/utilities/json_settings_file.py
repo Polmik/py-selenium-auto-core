@@ -66,4 +66,3 @@ class JsonSettingsFile:
     @staticmethod
     def _get_environment_value(key: str) -> Any:
         return EnvironmentConfiguration.get_variable(key)
-

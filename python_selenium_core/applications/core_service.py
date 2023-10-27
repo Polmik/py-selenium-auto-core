@@ -46,4 +46,3 @@ class CoreService:
     @classmethod
     def set_application(cls, application: Application):
         CoreService._app_container = application
-

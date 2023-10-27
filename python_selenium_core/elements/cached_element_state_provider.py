@@ -18,4 +18,3 @@ class CachedElementStateProvider:
         self.__conditional_wait = conditional_wait
         self.__element_cache_handler = element_cache_handler
         self.__log_element_state = log_element_state
-

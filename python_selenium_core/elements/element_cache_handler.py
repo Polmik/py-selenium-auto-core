@@ -34,7 +34,7 @@ class ElementCacheHandler:
             is_displayed = self.__element.is_displayed()
             # refresh is needed only if the property is not match to expected element state
             return (self.__state if custom_sate is None else custom_sate) == self.__state.Displayed and not is_displayed
-        except:
+        except Exception:
             # refresh is needed if the property is not available
             return True
 
