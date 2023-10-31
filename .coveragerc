@@ -1,0 +1,14 @@
+[run]
+branch = True
+source = python_selenium_core/
+omit =
+    setup.py
+
+[report]
+show_missing = true
+exclude_lines =
+    raise NotImplementedError
+
+[html]
+directory=reports/tests/
+
