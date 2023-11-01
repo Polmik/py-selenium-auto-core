@@ -2,11 +2,11 @@ from typing import Callable
 
 from selenium.webdriver.remote.webelement import WebElement
 
-from python_selenium_core.elements.constants.desired_state import DesiredState
-from python_selenium_core.elements.constants.element_state import ElementState
-from python_selenium_core.elements.element_finder import ElementFinder
-from python_selenium_core.locator.locator import Locator
-from python_selenium_core.waitings.conditional_wait import ConditionalWait
+from py_selenium_auto_core.elements.constants.desired_state import DesiredState
+from py_selenium_auto_core.elements.constants.element_state import ElementState
+from py_selenium_auto_core.elements.element_finder import ElementFinder
+from py_selenium_auto_core.locator.locator import Locator
+from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 
 
 class ElementStateProvider:

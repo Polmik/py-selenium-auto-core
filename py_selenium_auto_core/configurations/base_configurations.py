@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 
-from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
+from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
 
 
 class BaseConfiguration(abc.ABC):

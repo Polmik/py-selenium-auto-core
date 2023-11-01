@@ -1,9 +1,9 @@
 import time
 from typing import Callable
 
-from python_selenium_core.applications.startup import Startup
-from python_selenium_core.configurations.retry_configuration import RetryConfiguration
-from python_selenium_core.logging.logger import Logger
+from py_selenium_auto_core.applications.startup import Startup
+from py_selenium_auto_core.configurations.retry_configuration import RetryConfiguration
+from py_selenium_auto_core.logging.logger import Logger
 from tests.applications.browser.browser_service import BrowserService
 
 

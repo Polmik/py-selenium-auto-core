@@ -3,9 +3,9 @@ from typing import Callable
 from selenium.common import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from python_selenium_core.applications.startup import ServiceProvider, Startup
-from python_selenium_core.logging.logger import Logger
-from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
+from py_selenium_auto_core.applications.startup import ServiceProvider, Startup
+from py_selenium_auto_core.logging.logger import Logger
+from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
 from tests.applications.browser.browser_service import BrowserService
 
 

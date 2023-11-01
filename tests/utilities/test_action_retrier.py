@@ -1,4 +1,4 @@
-from python_selenium_core.utilities.action_retrier import ActionRetrier
+from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
 from tests.applications.browser.browser_service import BrowserService
 from tests.utilities.test_retrier import TestRetrier
 

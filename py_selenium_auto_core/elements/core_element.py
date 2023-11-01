@@ -4,20 +4,20 @@ from typing import Any, Callable, Optional
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
-from python_selenium_core.applications.application import Application
-from python_selenium_core.configurations.element_cache_configuration import ElementCacheConfiguration
-from python_selenium_core.configurations.logger_configuration import LoggerConfiguration
-from python_selenium_core.elements.constants.element_state import ElementState
-from python_selenium_core.elements.element_cache_handler import ElementCacheHandler
-from python_selenium_core.elements.element_factory import ElementFactory
-from python_selenium_core.elements.element_finder import ElementFinder
-from python_selenium_core.elements.element_state_provider import ElementStateProvider
-from python_selenium_core.localization.localization_manager import LocalizationManager
-from python_selenium_core.localization.localized_logger import LocalizedLogger
-from python_selenium_core.locator.locator import Locator
-from python_selenium_core.logging.logger import Logger
-from python_selenium_core.utilities.action_retrier import ActionRetrier
-from python_selenium_core.waitings.conditional_wait import ConditionalWait
+from py_selenium_auto_core.applications.application import Application
+from py_selenium_auto_core.configurations.element_cache_configuration import ElementCacheConfiguration
+from py_selenium_auto_core.configurations.logger_configuration import LoggerConfiguration
+from py_selenium_auto_core.elements.constants.element_state import ElementState
+from py_selenium_auto_core.elements.element_cache_handler import ElementCacheHandler
+from py_selenium_auto_core.elements.element_factory import ElementFactory
+from py_selenium_auto_core.elements.element_finder import ElementFinder
+from py_selenium_auto_core.elements.element_state_provider import ElementStateProvider
+from py_selenium_auto_core.localization.localization_manager import LocalizationManager
+from py_selenium_auto_core.localization.localized_logger import LocalizedLogger
+from py_selenium_auto_core.locator.locator import Locator
+from py_selenium_auto_core.logging.logger import Logger
+from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
+from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 
 
 class CoreElement(abc.ABC):

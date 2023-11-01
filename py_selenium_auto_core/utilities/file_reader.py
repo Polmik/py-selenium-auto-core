@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from python_selenium_core.utilities.root_path_helper import RootPathHelper
+from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
 
 
 class FileReader:

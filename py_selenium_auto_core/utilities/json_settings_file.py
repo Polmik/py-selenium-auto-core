@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from typing import overload, Any, Optional
 
-from python_selenium_core.utilities.environment_configuration import EnvironmentConfiguration
-from python_selenium_core.utilities.file_reader import FileReader
+from py_selenium_auto_core.utilities.environment_configuration import EnvironmentConfiguration
+from py_selenium_auto_core.utilities.file_reader import FileReader
 
 
 class JsonSettingsFile:

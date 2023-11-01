@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from python_selenium_core.configurations.base_configurations import BaseConfiguration
-from python_selenium_core.utilities.json_settings_file import JsonSettingsFile
+from py_selenium_auto_core.configurations.base_configurations import BaseConfiguration
+from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
 
 
 class RetryConfiguration(BaseConfiguration):

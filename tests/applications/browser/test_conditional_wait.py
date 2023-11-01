@@ -4,10 +4,10 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from python_selenium_core.locator.locator import Locator
+from py_selenium_auto_core.locator.locator import Locator
 from tests.applications.browser.browser_service import BrowserService
 from tests.applications.browser.test_with_browser import TestWithBrowser
-from python_selenium_core.waitings.conditional_wait import ConditionalWait
+from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 
 
 class TestConditionalWait(TestWithBrowser):

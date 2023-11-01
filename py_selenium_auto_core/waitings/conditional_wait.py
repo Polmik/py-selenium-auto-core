@@ -6,7 +6,7 @@ from selenium.common import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from python_selenium_core.configurations.timeout_configuration import TimeoutConfiguration
+from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
 
 
 class ConditionalWait:

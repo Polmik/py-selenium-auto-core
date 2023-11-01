@@ -1,4 +1,4 @@
-from python_selenium_core.applications.startup import ServiceProvider, Startup
+from py_selenium_auto_core.applications.startup import ServiceProvider, Startup
 
 
 class TestWithoutApplication:

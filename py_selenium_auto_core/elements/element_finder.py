@@ -6,11 +6,11 @@ from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from python_selenium_core.elements.constants.desired_state import DesiredState
-from python_selenium_core.elements.constants.element_state import ElementState
-from python_selenium_core.localization.localized_logger import LocalizedLogger
-from python_selenium_core.locator.locator import Locator
-from python_selenium_core.waitings.conditional_wait import ConditionalWait
+from py_selenium_auto_core.elements.constants.desired_state import DesiredState
+from py_selenium_auto_core.elements.constants.element_state import ElementState
+from py_selenium_auto_core.localization.localized_logger import LocalizedLogger
+from py_selenium_auto_core.locator.locator import Locator
+from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 
 
 class ElementFinder:

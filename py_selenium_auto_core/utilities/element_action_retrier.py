@@ -2,8 +2,8 @@ from typing import Callable, Optional, Any
 
 from selenium.common import StaleElementReferenceException, InvalidElementStateException
 
-from python_selenium_core.configurations.retry_configuration import RetryConfiguration
-from python_selenium_core.utilities.action_retrier import ActionRetrier
+from py_selenium_auto_core.configurations.retry_configuration import RetryConfiguration
+from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
 
 
 class ElementActionRetrier(ActionRetrier):

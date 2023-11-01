@@ -2,10 +2,10 @@ import os
 
 import pytest
 
-from python_selenium_core.configurations.logger_configuration import LoggerConfiguration
-from python_selenium_core.localization.localization_manager import LocalizationManager
-from python_selenium_core.logging.logger import Logger
-from python_selenium_core.utilities.root_path_helper import RootPathHelper
+from py_selenium_auto_core.configurations.logger_configuration import LoggerConfiguration
+from py_selenium_auto_core.localization.localization_manager import LocalizationManager
+from py_selenium_auto_core.logging.logger import Logger
+from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
 from tests.test_without_application import TestWithoutApplication
 
 

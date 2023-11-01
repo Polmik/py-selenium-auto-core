@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from python_selenium_core.logging.logger import Logger
-from python_selenium_core.utilities.root_path_helper import RootPathHelper
+from py_selenium_auto_core.logging.logger import Logger
+from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
 
 
 @pytest.fixture(scope="session", autouse=True)

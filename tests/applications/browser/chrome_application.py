@@ -5,8 +5,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.webdriver import WebDriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-from python_selenium_core.applications.application import Application
-from python_selenium_core.configurations.timeout_configuration import TimeoutConfiguration
+from py_selenium_auto_core.applications.application import Application
+from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
 
 
 class ChromeApplication(Application):
