@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
+from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
+
 
 class Logger:
     """This class is using for a creating extended log. It implements a Singleton pattern"""
@@ -68,7 +70,7 @@ class Logger:
     @classmethod
     def __configure_logger(cls):
         """Method to configure logging"""
-        log_path = os.path.join(Path(__file__).parent.parent.parent, "Log\\log.log")
+        log_path = os.path.join(Path(RootPathHelper.calling_root_path()).parent, "Log", "log.log")
 
         if not os.path.exists(os.path.dirname(log_path)):
             os.mkdir(os.path.dirname(log_path))

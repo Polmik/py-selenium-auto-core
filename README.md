@@ -1,7 +1,7 @@
 # Selenium CORE for Python
 
-[![Tests](https://github.com/Polmik/python-selenium-core/actions/workflows/tests.yml/badge.svg)](https://github.com/Polmik/python-selenium-core/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/Polmik/python-selenium-core/branch/main/graph/badge.svg)](https://codecov.io/gh/Polmik/python-selenium-core)
+[![Tests](https://github.com/Polmik/py-selenium-auto-core/actions/workflows/tests.yml/badge.svg)](https://github.com/Polmik/py-selenium-auto-core/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/Polmik/py-selenium-auto-core/branch/main/graph/badge.svg)](https://codecov.io/gh/Polmik/py-selenium-auto-core)
 
 ### Introduction
 
@@ -20,10 +20,10 @@ To simplify overriding of implementations this solution uses Dependency Injectio
 If you have [pip](https://pip.pypa.io/en/stable/) on your system, you can simply install or upgrade the Python bindings:
 
 ```bash
-pip install -U selenium
+pip install py-selenium-auto-core
 ```
 
-Alternately, you can download the source distribution from [PyPI](https://pypi.org/project/python-selenium-core/#files), unarchive it, and run:
+Alternately, you can download the source distribution from [PyPI](https://pypi.org/project/py-selenium-auto-core/#files), unarchive it, and run:
 
 ```bash
 python setup.py install
@@ -100,4 +100,4 @@ BrowserServices.service_provider().conditional_wait().wait_for_driver(
 
 
 ### License
-Library's source code is made available under the [Apache 2.0 license](https://github.com/Polmik/python-selenium-core/blob/main/LICENSE).
+Library's source code is made available under the [Apache 2.0 license](https://github.com/Polmik/py-selenium-auto-core/blob/main/LICENSE).

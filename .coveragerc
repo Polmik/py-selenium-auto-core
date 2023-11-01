@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = python_selenium_core/
+source = py_selenium_auto_core/
 omit =
     setup.py
 
