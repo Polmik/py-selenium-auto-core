@@ -1,4 +1,4 @@
-v0.4.2
+v0.4.3
 * Renamed CoreService in CoreServices
 * Changed approach to work with ServiceProvider in CoreServices
 Old:
