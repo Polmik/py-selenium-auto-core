@@ -1,5 +1,9 @@
 # Selenium CORE for Python
 
+[![Latest Version](https://img.shields.io/pypi/v/py_selenium_auto_core.svg)](https://pypi.org/project/py-selenium-auto-core/)
+[![License](https://img.shields.io/pypi/l/py_selenium_auto_core.svg)](https://pypi.org/project/py-selenium-auto-core/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/py_selenium_auto_core.svg)](https://pypi.org/project/py-selenium-auto-core/)
+[![Supported Python implementations](https://img.shields.io/pypi/implementation/py_selenium_auto_core.svg)](https://pypi.org/project/py-selenium-auto-core/)
 [![Tests](https://github.com/Polmik/py-selenium-auto-core/actions/workflows/tests.yml/badge.svg)](https://github.com/Polmik/py-selenium-auto-core/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/Polmik/py-selenium-auto-core/branch/main/graph/badge.svg)](https://codecov.io/gh/Polmik/py-selenium-auto-core)
 
