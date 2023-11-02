@@ -1,6 +1,6 @@
 import pytest
 
-from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.browser_services import BrowserServices
 from tests.applications.browser.test_with_browser import TestWithBrowser
 
 
@@ -32,4 +32,4 @@ class TestApplicationNotStarted(TestWithBrowser):
         service_attr = self.service_provider.__getattribute__(service)
         assert service_attr is not None
         assert service_attr() is not None
-        assert not BrowserService.is_application_started()
+        assert not BrowserServices.Instance.is_application_started()
