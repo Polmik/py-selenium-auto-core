@@ -6,7 +6,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from py_selenium_auto_core.applications.startup import ServiceProvider, Startup
 from py_selenium_auto_core.logging.logger import Logger
 from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
-from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.browser_services import BrowserServices
 
 
 class TestWithBrowser:
@@ -15,15 +15,15 @@ class TestWithBrowser:
     service_provider: ServiceProvider = None
 
     def setup_method(self, method):
-        self.service_provider = CustomStartup.configure_services(lambda: BrowserService.application())
-        BrowserService.set_service_provider(self.service_provider)
+        self.service_provider = CustomStartup.configure_services(lambda: BrowserServices.Instance.application)
+        BrowserServices.Instance.service_provider = self.service_provider
 
     def teardown_method(self, method):
-        if BrowserService.is_application_started():
-            BrowserService.application().quit()
+        if BrowserServices.Instance.is_application_started():
+            BrowserServices.Instance.application.quit()
 
     def go_to_url(self, url: str, driver: WebDriver = None):
-        driver_instance = driver or BrowserService.application().driver
+        driver_instance = driver or BrowserServices.Instance.application.driver
         try:
             driver_instance.get(url)
         except WebDriverException as e:

@@ -4,7 +4,7 @@ from typing import Callable
 from py_selenium_auto_core.applications.startup import Startup
 from py_selenium_auto_core.configurations.retry_configuration import RetryConfiguration
 from py_selenium_auto_core.logging.logger import Logger
-from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.browser_services import BrowserServices
 
 
 class TestRetrier:
@@ -13,18 +13,18 @@ class TestRetrier:
 
     @property
     def logger(self) -> Logger:
-        return BrowserService.service_provider().logger()
+        return BrowserServices.Instance.service_provider.logger()
 
     @property
     def retry_configuration(self) -> RetryConfiguration:
-        return BrowserService.service_provider().retry_configuration()
+        return BrowserServices.Instance.service_provider.retry_configuration()
 
     @property
     def polling_interval(self) -> float:
         return self.retry_configuration.polling_interval * 1000
 
     def setup_method(self, method):
-        Startup.configure_services(lambda: BrowserService.application())
+        Startup.configure_services(lambda: BrowserServices.Instance.application)
 
     def retrier_should_work_once(self, function: Callable):
         start_time = time.time()
