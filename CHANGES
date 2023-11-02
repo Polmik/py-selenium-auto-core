@@ -1,0 +1,60 @@
+v0.4.2
+* Renamed CoreService in CoreServices
+* Changed approach to work with ServiceProvider in CoreServices
+Old:
+    def get_service_provider(cls, application_provider: Callable, service_provider: ServiceProvider = None)
+    get_service_provider(None, service_provider=Startup.configure_services(None))
+New:
+    def _get_service_provider(
+        cls,
+        application_provider: Callable[[ServiceProvider], Application],
+        service_provider: Callable[[], ServiceProvider] = None
+    )
+    get_service_provider(
+        None,
+        service_provider=lambda: Startup.configure_services(None)
+    )
+* Refactoring
+* Added some tests
+
+v0.4.1
+* Updated dependencies due to package renaming
+* Changed the use of the file path in the log to calling_root_path()
+
+v0.4.0
+* Renamed repo and package from python_selenium_core to py_selenium_auto_core
+* Added RootPath helper to get calling and executing paths
+* Added JsonSettingsFile to simplify working with settings and EnvVariables
+* Added documentations for methods and classes
+* Added LocalizationManager to support different localizations
+* Refactoring
+* Added some tests
+* Added .coveragerc
+* Added yml files to test and publish
+* Updated README.md
+* First publish in PyPi
+
+* Updated configurations
+* Supporting PyLogger
+** Created instance
+** Added LocalizedLogger to work with localization
+* Added setup.py to install the package locally
+* Added some tests
+
+v0.3.2
+* Renamed package from core to python_selenium_core
+* Updated configurations
+* Supporting PyLogger
+** Created instance
+** Added LocalizedLogger to work with localization
+* Added setup.py to install the package locally
+* Added some tests
+* Updated requirements versions
+
+v0.2.3
+* Updated project structure
+** Added configurations
+** Updated Startup and ServiceProvider
+* Added utilities for elements
+* Added some tests
+
