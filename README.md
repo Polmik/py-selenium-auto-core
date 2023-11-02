@@ -44,11 +44,11 @@ class BrowserService(CoreService):
 
     @staticmethod
     def application() -> YourApplication:
-        return CoreService.get_application(lambda service: BrowserService._start_application(service))
+        return CoreService._get_application(lambda service: BrowserService._start_application(service))
 
     @staticmethod
     def service_provider() -> ServiceProvider:
-        return CoreService.get_service_provider(lambda service: BrowserService.application())
+        return CoreService._get_service_provider(lambda service: BrowserService.application())
 
     @staticmethod
     def _start_application(service_provider: ServiceProvider):
@@ -59,26 +59,27 @@ If you need to register your own services / rewrite the implementation, you need
 
 ```python
 class BrowserService(CoreService):
-    
     _browser_startup_container: CustomStartup = CustomStartup()
-    
+
     @staticmethod
     def is_application_started() -> bool:
         return CoreService._is_application_started()
 
     @staticmethod
     def application() -> Application:
-        return CoreService.get_application(lambda service: your_implementation, lambda: BrowserService._browser_startup_container.configure_services(lambda service: BrowserService.application()))
+        return CoreService._get_application(lambda service: your_implementation,
+                                            lambda: BrowserService._browser_startup_container.configure_services(
+                                                lambda service: BrowserService.application()))
 
     @staticmethod
     def service_provider() -> ServiceProvider:
-        return CoreService.get_service_provider(lambda service: BrowserService.application())
+        return CoreService._get_service_provider(lambda service: BrowserService.application())
 
     @staticmethod
     def _start_application(service_provider: ServiceProvider):
         ...  # your implementation
-    
-    
+
+
 class CustomStartup(Startup):
 
     @staticmethod

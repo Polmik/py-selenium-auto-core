@@ -21,13 +21,13 @@ class Logger:
         return cls.__log
 
     @classmethod
-    def info(cls, msg):
+    def info(cls, msg, *args):
         """Log info message
 
         Args:
             msg: Message
         """
-        cls._instance().info(msg)
+        cls._instance().info(msg, *args)
 
     @classmethod
     def debug(cls, msg, exc_info: Optional[Exception] = None):

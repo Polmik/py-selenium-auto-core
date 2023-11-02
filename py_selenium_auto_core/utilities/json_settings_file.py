@@ -8,7 +8,7 @@ from py_selenium_auto_core.utilities.file_reader import FileReader
 
 
 class JsonSettingsFile:
-    """Class to provides methods to get info from JSON files"""
+    """Class provides methods to get info from JSON files"""
 
     @overload
     def __init__(self, setting_json: dict):
@@ -29,7 +29,7 @@ class JsonSettingsFile:
             setting_name (str|dict): Name of resource file or dictionary
             root_path: Root path which resource belongs to
         """
-        if not setting_name:
+        if setting_name is None:
             raise ValueError("SettingName[str | dict] couldn't be None")
         if isinstance(setting_name, dict):
             self.setting_json: dict = setting_name

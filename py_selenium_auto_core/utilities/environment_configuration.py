@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 
@@ -5,7 +7,7 @@ class EnvironmentConfiguration:
     """Environment variables reader"""
 
     @staticmethod
-    def get_variable(env_key: str) -> str:
+    def get_variable(env_key: str) -> str | None:
         """Gets value of environment variable by key
 
         Args:

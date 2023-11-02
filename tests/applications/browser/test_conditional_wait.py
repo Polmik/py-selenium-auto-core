@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from py_selenium_auto_core.locator.locator import Locator
-from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.browser_services import BrowserServices
 from tests.applications.browser.test_with_browser import TestWithBrowser
 from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 
@@ -14,11 +14,11 @@ class TestConditionalWait(TestWithBrowser):
 
     wiki_url: str = "https://wikipedia.org"
     little_timeout = 1
-    polling_interval = BrowserService.service_provider().timeout_configuration().polling_interval
+    polling_interval = BrowserServices.Instance.service_provider.timeout_configuration().polling_interval
 
     @pytest.fixture
     def conditional_wait(self) -> ConditionalWait:
-        return BrowserService.service_provider().conditional_wait()
+        return BrowserServices.Instance.service_provider.conditional_wait()
 
     @pytest.fixture
     def conditional_wait_for_condition(self, conditional_wait) -> Callable:

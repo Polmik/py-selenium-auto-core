@@ -1,5 +1,5 @@
 from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
-from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.browser_services import BrowserServices
 from tests.utilities.test_retrier import TestRetrier
 
 
@@ -12,7 +12,7 @@ class TestActionRetrier(TestRetrier):
         return ActionRetrier(self.retry_configuration)
 
     def test_retrier_should_be_possible__to_get_from_service(self):
-        BrowserService.service_provider().action_retrier()
+        BrowserServices.Instance.service_provider.action_retrier()
 
     def test_retrier_should_work_once(self):
         self.retrier_should_work_once(lambda: self.action_retrier.do_with_retry(lambda: None))

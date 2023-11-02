@@ -2,7 +2,7 @@ import pytest
 from selenium.common import InvalidElementStateException, StaleElementReferenceException
 
 from py_selenium_auto_core.utilities.element_action_retrier import ElementActionRetrier
-from tests.applications.browser.browser_service import BrowserService
+from tests.applications.browser.browser_services import BrowserServices
 from tests.utilities.test_retrier import TestRetrier
 
 
@@ -20,7 +20,7 @@ class TestElementActionRetrier(TestRetrier):
         return ElementActionRetrier(self.retry_configuration)
 
     def test_retrier_should_be_possible__to_get_from_service(self):
-        BrowserService.service_provider().element_action_retrier()
+        BrowserServices.Instance.service_provider.element_action_retrier()
 
     def test_retrier_should_work_once(self):
         self.retrier_should_work_once(lambda: self.element_action_retrier.do_with_retry(lambda: None))
