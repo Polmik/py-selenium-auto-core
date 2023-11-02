@@ -1,18 +1,22 @@
 import time
 from time import sleep
-from typing import Any, Callable, List
+from typing import Any, Callable, List, TYPE_CHECKING
 
 from selenium.common import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
 from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
+from py_selenium_auto_core.logging.logger import Logger
+
+if TYPE_CHECKING:
+    from py_selenium_auto_core.applications.startup import ServiceProvider
 
 
 class ConditionalWait:
     """This class is used for waiting any conditions."""
 
-    def __init__(self, timeout_configuration: TimeoutConfiguration, service_provider):
+    def __init__(self, timeout_configuration: TimeoutConfiguration, service_provider: 'ServiceProvider'):
         """ConditionalWait constructor
 
         Args:

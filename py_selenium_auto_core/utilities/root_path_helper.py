@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 class RootPathHelper:
-    """Class to provides methods for getting the root path to packages based on __init__.py"""
+    """Class provides methods for getting the root path to packages based on __init__.py"""
 
     init_filename = "__init__.py"
 
