@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional, TypeVar
 
 from dependency_injector import containers
 from dependency_injector.providers import Singleton, Factory, Self
@@ -48,10 +48,17 @@ class ServiceProvider(containers.DeclarativeContainer):
     element_finder: Factory[ElementFinder] = Factory(ElementFinder, localized_logger, conditional_wait)
 
 
+T = TypeVar("T", bound=ServiceProvider)
+
+
 class Startup:
 
     @staticmethod
-    def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
+    def configure_services(
+            application_provider: Callable,
+            settings: Optional[JsonSettingsFile] = None,
+            service_provider: Optional[T] = None,
+    ) -> T:
         """Method to configure dependencies for services of the current library
 
         Args:
@@ -59,11 +66,12 @@ class Startup:
                 Example: lambda: Application.get_application()
             settings: File with settings for configuration of dependencies
                 Pass the result of get_settings() if you need to get settings from the another package
+            service_provider: Implementation of ServiceProvider
 
         Returns:
             Configured ServiceProvider
         """
-        service_provider = ServiceProvider()
+        service_provider: T = service_provider or ServiceProvider()
         settings = settings or Startup.get_settings()
 
         service_provider.settings_file.override(Singleton(lambda: settings))
