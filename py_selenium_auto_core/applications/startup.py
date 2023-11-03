@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Callable, Optional, TypeVar
 
 from dependency_injector import containers
@@ -58,7 +60,7 @@ class Startup:
             application_provider: Callable,
             settings: Optional[JsonSettingsFile] = None,
             service_provider: Optional[T] = None,
-    ) -> T:
+    ) -> T | ServiceProvider:
         """Method to configure dependencies for services of the current library
 
         Args:
@@ -66,7 +68,12 @@ class Startup:
                 Example: lambda: Application.get_application()
             settings: File with settings for configuration of dependencies
                 Pass the result of get_settings() if you need to get settings from the another package
-            service_provider: Implementation of ServiceProvider
+            service_provider: Implementation of ServiceProvider.
+                To override base container and related providers use the following logic:
+
+                    ServiceProvider.override(CustomServiceProvider)  # override BaseContainer
+                    Startup.configure_service(_, _, service_provider=CustomServiceProvider())
+                    ServiceProvider.reset_override()  # Reset overriding to base statement
 
         Returns:
             Configured ServiceProvider
