@@ -7,7 +7,6 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
 from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
-from py_selenium_auto_core.logging.logger import Logger
 
 if TYPE_CHECKING:
     from py_selenium_auto_core.applications.startup import ServiceProvider
@@ -51,8 +50,8 @@ class ConditionalWait:
             WebDriverTimeoutException: Throws when timeout exceeded and condition not satisfied.
         """
         ignore_exceptions = exceptions_to_ignore or [StaleElementReferenceException]
-        wait_timeout = self.__resolve_condition_timeout(timeout)
-        check_interval = self.__resolve_polling_interval(polling_interval)
+        wait_timeout = self._resolve_condition_timeout(timeout)
+        check_interval = self._resolve_polling_interval(polling_interval)
         application = self.__service_provider.application()
         application.set_implicit_wait_timeout(0)
         wait = WebDriverWait(
@@ -93,7 +92,7 @@ class ConditionalWait:
             )
             return True
 
-        return self.__is_condition_satisfied(
+        return self._is_condition_satisfied(
             function=predicate,
             exceptions_to_ignore=[TimeoutException],
         )
@@ -121,11 +120,11 @@ class ConditionalWait:
         if function is None:
             raise ValueError("Function cannot be None")
 
-        wait_timeout = self.__resolve_condition_timeout(timeout)
-        check_interval = self.__resolve_polling_interval(polling_interval)
+        wait_timeout = self._resolve_condition_timeout(timeout)
+        check_interval = self._resolve_polling_interval(polling_interval)
         start_time = time.time()
         while True:
-            if self.__is_condition_satisfied(function, exceptions_to_ignore or []):
+            if self._is_condition_satisfied(function, exceptions_to_ignore or []):
                 return
             if time.time() - start_time > wait_timeout:
                 raise TimeoutException(self.__get_timeout_exception_message(wait_timeout, message))
@@ -139,7 +138,7 @@ class ConditionalWait:
         return exception_message
 
     @staticmethod
-    def __is_condition_satisfied(
+    def _is_condition_satisfied(
             function: Callable[[], bool],
             exceptions_to_ignore: List
     ) -> bool:
@@ -150,10 +149,10 @@ class ConditionalWait:
                 return False
             raise ex
 
-    def __resolve_condition_timeout(self, timeout: float) -> float:
+    def _resolve_condition_timeout(self, timeout: float) -> float:
         return self.__timeout_configuration.condition if timeout is None else timeout
 
-    def __resolve_polling_interval(self, polling_interval: float) -> float:
+    def _resolve_polling_interval(self, polling_interval: float) -> float:
         return self.__timeout_configuration.polling_interval if polling_interval is None else polling_interval
 
     @staticmethod

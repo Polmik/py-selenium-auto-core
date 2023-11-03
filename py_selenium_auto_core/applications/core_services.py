@@ -28,11 +28,6 @@ class CoreServices(abc.ABC):
             cls._service_provider_container = service_provider()
         elif cls._service_provider_container is None:
             cls._service_provider_container = Startup.configure_services(application_provider)
-        # if cls._service_provider_container is None:
-        #     if service_provider is None:
-        #         cls._service_provider_container = Startup.configure_services(application_provider)
-        #     else:
-        #         cls._service_provider_container = service_provider()
         return cls._service_provider_container
 
     @classmethod

@@ -1,6 +1,8 @@
-from typing import Callable
+from typing import Callable, Optional
 
 import typing
+
+import pytest
 from dependency_injector.providers import Singleton
 
 from py_selenium_auto_core.applications.application import Application
@@ -13,44 +15,96 @@ from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
 from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
 
 
+@pytest.fixture
+def reset_override(request):
+    request.addfinalizer(lambda: ServiceProvider.reset_override())
+    yield
+
+
 class TestCoreServices:
 
-    def test_should_be_possible_to_register_custom_services(self):
+    def test_possible_to_register_custom_services_via_startup(self):
         assert isinstance(
             TestBrowserService.Instance.service_provider.timeout_configuration(),
             TestTimeoutConfiguration,
         )
 
-    def test_should_be_possible_to_get_custom_values(self):
-        timeout_configuration: TestTimeoutConfiguration = TestBrowserService.Instance.service_provider.timeout_configuration()
+    def test_possible_to_get_custom_values_via_startup(self):
+        timeout_configuration: TestTimeoutConfiguration = \
+            TestBrowserService.Instance.service_provider.timeout_configuration()
         assert timeout_configuration.custom_timeout == 656
+        assert timeout_configuration.polling_interval == 1
+        # Check overriding for related classes
+        assert TestBrowserService.Instance.service_provider.conditional_wait()._resolve_polling_interval(None) == 1
 
-    def test_should_be_possible_to_get_custom_logger_values(self):
+    def test_possible_to_get_custom_logger_values_via_startup(self):
         TestBrowserService.Instance.set_startup(CustomStartup())
-        logger_configuration: CustomLoggerConfiguration = TestBrowserService.Instance.service_provider.logger_configuration()
+        logger_configuration: CustomLoggerConfiguration = \
+            TestBrowserService.Instance.service_provider.logger_configuration()
         assert logger_configuration.custom_logger == "CustomLogger"
 
-    def test_should_be_possible_to_register_custom_services_with_custom_settings_file(self):
+    def test_possible_to_register_custom_services_via_startup_with_custom_settings_file(self):
         assert "special" == TestBrowserService.Instance.service_provider.logger_configuration().language
+
+    def test_set_correct_value_for_new_instance_sp_after_overriding(self):
+        assert type(CustomServiceProvider.timeout_configuration) == Singleton[TestTimeoutConfiguration]
+
+    def test_set_correct_implementation_for_related_objects_after_overriding(self):
+        service_provider = CustomSPStartup.configure_services(lambda: None)
+        assert service_provider.timeout_configuration().custom_timeout == 656
+        assert service_provider.timeout_configuration().polling_interval == 1
+        # Check overriding for related classes
+        assert service_provider.conditional_wait()._resolve_polling_interval(None) == 1
+
+    def test_overriding_not_affect_base_implementation(self):
+        service_provider = CustomSPStartup.configure_services(lambda: None)
+        assert service_provider.timeout_configuration().custom_timeout == 656
+        assert service_provider.timeout_configuration().polling_interval == 1
+        # Check overriding for related classes
+        assert service_provider.conditional_wait()._resolve_polling_interval(None) == 1
+
+        base_service_provider = Startup.configure_services(lambda: None)
+        assert base_service_provider.timeout_configuration().polling_interval == 0.3
+        # Check overriding for related classes
+        assert base_service_provider.conditional_wait()._resolve_polling_interval(None) == 0.3
+
+    def test_custom_provider_not_set_implementation_for_related_without_overriding(self):
+        service_provider = CustomSPStartup.configure_services_without_override(lambda: None)
+        assert service_provider.timeout_configuration().custom_timeout == 656
+        assert service_provider.timeout_configuration().polling_interval == 1
+        # Check overriding for related classes
+        assert service_provider.conditional_wait()._resolve_polling_interval(None) == 0.3
 
 
 class TestStartup(Startup):
 
     @staticmethod
-    def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
+    def configure_services(
+            application_provider: Callable,
+            settings: Optional[JsonSettingsFile] = None,
+            service_provider: Optional[ServiceProvider] = None,
+    ) -> ServiceProvider:
         settings = JsonSettingsFile("settings.special.json", RootPathHelper.calling_root_path())
         service_provider = Startup.configure_services(application_provider, settings)
-        service_provider.timeout_configuration.override(Singleton(TestTimeoutConfiguration, service_provider.settings_file))
+        service_provider.timeout_configuration.override(
+            Singleton(TestTimeoutConfiguration, service_provider.settings_file)
+        )
         return service_provider
 
 
 class CustomStartup(TestStartup):
 
     @staticmethod
-    def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
+    def configure_services(
+            application_provider: Callable,
+            settings: Optional[JsonSettingsFile] = None,
+            service_provider: Optional[ServiceProvider] = None,
+    ) -> ServiceProvider:
         settings = JsonSettingsFile("settings.special.json", RootPathHelper.calling_root_path())
         service_provider = TestStartup.configure_services(application_provider, settings)
-        service_provider.logger_configuration.override(Singleton(CustomLoggerConfiguration, service_provider.settings_file))
+        service_provider.logger_configuration.override(
+            Singleton(CustomLoggerConfiguration, service_provider.settings_file)
+        )
         return service_provider
 
 
@@ -63,6 +117,10 @@ class TestTimeoutConfiguration(TimeoutConfiguration):
     @property
     def custom_timeout(self):
         return self._custom_timeout
+
+    @property
+    def polling_interval(self) -> float:
+        return 1
 
 
 class CustomLoggerConfiguration(LoggerConfiguration):
@@ -101,7 +159,7 @@ class TestBrowserService:
 
         def set_startup(self, startup: Startup):
             if startup is not None:
-                self.startup = typing.cast(TestStartup, startup)
+                self.startup = startup
 
         @property
         def _start_function(self):
@@ -110,3 +168,35 @@ class TestBrowserService:
             return _predicate
 
     Instance: BrowserService = BrowserService()
+
+
+class CustomServiceProvider(ServiceProvider):
+    timeout_configuration: Singleton[TimeoutConfiguration] = Singleton(
+        TestTimeoutConfiguration,
+        ServiceProvider.settings_file
+    )
+
+
+class CustomSPStartup(Startup):
+
+    @staticmethod
+    def configure_services(
+            application_provider: Callable,
+            settings: Optional[JsonSettingsFile] = None,
+            service_provider: Optional[ServiceProvider] = None,
+    ) -> CustomServiceProvider:
+        ServiceProvider.override(CustomServiceProvider)
+
+        settings = JsonSettingsFile("settings.special.json", RootPathHelper.calling_root_path())
+        service_provider = Startup.configure_services(application_provider, settings, CustomServiceProvider())
+
+        ServiceProvider.reset_override()
+        return service_provider
+
+    @staticmethod
+    def configure_services_without_override(
+            application_provider: Callable,
+    ) -> CustomServiceProvider:
+        settings = JsonSettingsFile("settings.special.json", RootPathHelper.calling_root_path())
+        service_provider = Startup.configure_services(application_provider, settings, CustomServiceProvider())
+        return service_provider
