@@ -159,7 +159,7 @@ class TestBrowserService:
 
         def set_startup(self, startup: Startup):
             if startup is not None:
-                self.startup = typing.cast(TestStartup, startup)
+                self.startup = startup
 
         @property
         def _start_function(self):
