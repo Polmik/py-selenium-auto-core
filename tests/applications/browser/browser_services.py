@@ -4,9 +4,7 @@ from tests.applications.browser.chrome_application import ChromeApplication
 
 
 class BrowserServices:
-
     class BrowserServiceInstance(CoreServices):
-
         def is_application_started(self) -> bool:
             return self._is_application_started()
 

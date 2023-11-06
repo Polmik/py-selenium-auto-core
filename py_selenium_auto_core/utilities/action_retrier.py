@@ -28,7 +28,9 @@ class ActionRetrier:
         Exception:
             WebDriverTimeoutException: Throws when timeout exceeded and condition not satisfied.
         """
-        exceptions_to_handle = handled_exceptions if handled_exceptions is not None else []
+        exceptions_to_handle = (
+            handled_exceptions if handled_exceptions is not None else []
+        )
         retry_attempts_left = self.__retry_configuration.number
         actual_interval = self.__retry_configuration.polling_interval
         result = None
@@ -38,7 +40,9 @@ class ActionRetrier:
                 result = function()
                 break
             except Exception as e:
-                if retry_attempts_left != 0 and self._is_ignored_exception(e, exceptions_to_handle):
+                if retry_attempts_left != 0 and self._is_ignored_exception(
+                    e, exceptions_to_handle
+                ):
                     sleep(actual_interval)
                     retry_attempts_left -= 1
                 else:

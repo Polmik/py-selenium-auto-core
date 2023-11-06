@@ -6,17 +6,25 @@ from dependency_injector import containers
 from dependency_injector.providers import Singleton, Factory, Self
 
 from py_selenium_auto_core.applications.application import Application
-from py_selenium_auto_core.configurations.element_cache_configuration import ElementCacheConfiguration
-from py_selenium_auto_core.configurations.logger_configuration import LoggerConfiguration
+from py_selenium_auto_core.configurations.element_cache_configuration import (
+    ElementCacheConfiguration,
+)
+from py_selenium_auto_core.configurations.logger_configuration import (
+    LoggerConfiguration,
+)
 from py_selenium_auto_core.configurations.retry_configuration import RetryConfiguration
-from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
+from py_selenium_auto_core.configurations.timeout_configuration import (
+    TimeoutConfiguration,
+)
 from py_selenium_auto_core.localization.localization_manager import LocalizationManager
 from py_selenium_auto_core.localization.localized_logger import LocalizedLogger
 from py_selenium_auto_core.logging.logger import Logger
 from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
 from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
 from py_selenium_auto_core.utilities.element_action_retrier import ElementActionRetrier
-from py_selenium_auto_core.utilities.environment_configuration import EnvironmentConfiguration
+from py_selenium_auto_core.utilities.environment_configuration import (
+    EnvironmentConfiguration,
+)
 from py_selenium_auto_core.utilities.file_reader import FileReader
 from py_selenium_auto_core.elements.element_finder import ElementFinder
 from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
@@ -25,6 +33,7 @@ from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 
 class ServiceProvider(containers.DeclarativeContainer):
     """Container that allows to resolve dependencies for all services in the library"""
+
     __self__ = Self()
 
     settings_file: Singleton[JsonSettingsFile] = Singleton(lambda: JsonSettingsFile({}))
@@ -34,32 +43,47 @@ class ServiceProvider(containers.DeclarativeContainer):
         ElementCacheConfiguration,
         settings_file,
     )
-    logger_configuration: Singleton[LoggerConfiguration] = Singleton(LoggerConfiguration, settings_file)
-    timeout_configuration: Singleton[TimeoutConfiguration] = Singleton(TimeoutConfiguration, settings_file)
-    retry_configuration: Singleton[RetryConfiguration] = Singleton(RetryConfiguration, settings_file)
-    localization_manager: Singleton[LocalizationManager] = Singleton(LocalizationManager, logger_configuration, logger)
+    logger_configuration: Singleton[LoggerConfiguration] = Singleton(
+        LoggerConfiguration, settings_file
+    )
+    timeout_configuration: Singleton[TimeoutConfiguration] = Singleton(
+        TimeoutConfiguration, settings_file
+    )
+    retry_configuration: Singleton[RetryConfiguration] = Singleton(
+        RetryConfiguration, settings_file
+    )
+    localization_manager: Singleton[LocalizationManager] = Singleton(
+        LocalizationManager, logger_configuration, logger
+    )
     localized_logger: Singleton[LocalizedLogger] = Singleton(
         LocalizedLogger,
         localization_manager,
         logger,
         logger_configuration,
     )
-    action_retrier: Singleton[ActionRetrier] = Singleton(ActionRetrier, retry_configuration)
-    element_action_retrier: Singleton[ElementActionRetrier] = Singleton(ElementActionRetrier, retry_configuration)
-    conditional_wait: Factory[ConditionalWait] = Factory(ConditionalWait, timeout_configuration, __self__)
-    element_finder: Factory[ElementFinder] = Factory(ElementFinder, localized_logger, conditional_wait)
+    action_retrier: Singleton[ActionRetrier] = Singleton(
+        ActionRetrier, retry_configuration
+    )
+    element_action_retrier: Singleton[ElementActionRetrier] = Singleton(
+        ElementActionRetrier, retry_configuration
+    )
+    conditional_wait: Factory[ConditionalWait] = Factory(
+        ConditionalWait, timeout_configuration, __self__
+    )
+    element_finder: Factory[ElementFinder] = Factory(
+        ElementFinder, localized_logger, conditional_wait
+    )
 
 
 T = TypeVar("T", bound=ServiceProvider)
 
 
 class Startup:
-
     @staticmethod
     def configure_services(
-            application_provider: Callable,
-            settings: Optional[JsonSettingsFile] = None,
-            service_provider: Optional[T] = None,
+        application_provider: Callable,
+        settings: Optional[JsonSettingsFile] = None,
+        service_provider: Optional[T] = None,
     ) -> T | ServiceProvider:
         """Method to configure dependencies for services of the current library
 
@@ -97,8 +121,18 @@ class Startup:
             An instance of settings
         """
         profile_name = EnvironmentConfiguration.get_variable("profile")
-        settings_profile = "settings.json" if not profile_name else f"settings.{profile_name}.json"
+        settings_profile = (
+            "settings.json" if not profile_name else f"settings.{profile_name}.json"
+        )
         Logger.debug(f"Get settings from: {settings_profile}")
-        if FileReader.is_resource_file_exist(settings_profile, root_path=RootPathHelper.calling_root_path()):
-            return JsonSettingsFile(setting_name=settings_profile, root_path=RootPathHelper.calling_root_path())
-        return JsonSettingsFile(setting_name=settings_profile, root_path=RootPathHelper.executing_root_path())
+        if FileReader.is_resource_file_exist(
+            settings_profile, root_path=RootPathHelper.calling_root_path()
+        ):
+            return JsonSettingsFile(
+                setting_name=settings_profile,
+                root_path=RootPathHelper.calling_root_path(),
+            )
+        return JsonSettingsFile(
+            setting_name=settings_profile,
+            root_path=RootPathHelper.executing_root_path(),
+        )

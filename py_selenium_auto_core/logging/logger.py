@@ -70,13 +70,17 @@ class Logger:
     @classmethod
     def __configure_logger(cls):
         """Method to configure logging"""
-        log_path = os.path.join(Path(RootPathHelper.calling_root_path()).parent, "Log", "log.log")
+        log_path = os.path.join(
+            Path(RootPathHelper.calling_root_path()).parent, "Log", "log.log"
+        )
 
         if not os.path.exists(os.path.dirname(log_path)):
             os.mkdir(os.path.dirname(log_path))
 
         cls.__log.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s [%(name)s] [%(levelname)-5.5s]  %(message)s")
+        formatter = logging.Formatter(
+            "%(asctime)s [%(name)s] [%(levelname)-5.5s]  %(message)s"
+        )
 
         # Stream handler
         stream_handler = logging.StreamHandler()

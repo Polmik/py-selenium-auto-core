@@ -15,7 +15,9 @@ class TestWithBrowser:
     service_provider: ServiceProvider = None
 
     def setup_method(self, method):
-        self.service_provider = CustomStartup.configure_services(lambda: BrowserServices.Instance.application)
+        self.service_provider = CustomStartup.configure_services(
+            lambda: BrowserServices.Instance.application
+        )
         BrowserServices.Instance.service_provider = self.service_provider
 
     def teardown_method(self, method):
@@ -28,14 +30,17 @@ class TestWithBrowser:
             driver_instance.get(url)
         except WebDriverException as e:
             if driver_instance.current_url:
-                Logger.fatal(f"Random error occurred: [{e.msg}], but successfully navigated to URL [{url}]")
+                Logger.fatal(
+                    f"Random error occurred: [{e.msg}], but successfully navigated to URL [{url}]"
+                )
             else:
                 raise e
 
 
 class CustomStartup(Startup):
-
     @staticmethod
-    def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
+    def configure_services(
+        application_provider: Callable, settings: JsonSettingsFile = None
+    ) -> ServiceProvider:
         service_provider = Startup.configure_services(application_provider, settings)
         return service_provider

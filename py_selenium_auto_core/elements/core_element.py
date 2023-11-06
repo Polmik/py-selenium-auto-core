@@ -5,8 +5,12 @@ from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
 from py_selenium_auto_core.applications.application import Application
-from py_selenium_auto_core.configurations.element_cache_configuration import ElementCacheConfiguration
-from py_selenium_auto_core.configurations.logger_configuration import LoggerConfiguration
+from py_selenium_auto_core.configurations.element_cache_configuration import (
+    ElementCacheConfiguration,
+)
+from py_selenium_auto_core.configurations.logger_configuration import (
+    LoggerConfiguration,
+)
 from py_selenium_auto_core.elements.constants.element_state import ElementState
 from py_selenium_auto_core.elements.element_cache_handler import ElementCacheHandler
 from py_selenium_auto_core.elements.element_factory import ElementFactory
@@ -41,7 +45,9 @@ class CoreElement(abc.ABC):
         """Gets element state"""
         if self.cache_configuration.is_enabled:
             raise NotImplementedError
-        return ElementStateProvider(self.locator, self.conditional_wait, self.finder, self.log_element_state)
+        return ElementStateProvider(
+            self.locator, self.conditional_wait, self.finder, self.log_element_state
+        )
 
     @property
     def visual(self):
@@ -52,7 +58,9 @@ class CoreElement(abc.ABC):
     def cache(self) -> ElementCacheHandler:
         """Gets element cache handler"""
         if self._element_cache_handler is None:
-            self._element_cache_handler = ElementCacheHandler(self.locator, self.name, self._element_state, self.finder)
+            self._element_cache_handler = ElementCacheHandler(
+                self.locator, self.name, self._element_state, self.finder
+            )
         return self._element_cache_handler
 
     @property
@@ -120,7 +128,7 @@ class CoreElement(abc.ABC):
                 self.element_type,
                 self.name,
                 message_key,
-                self.localization_manager.get_localized_message(state_key)
+                self.localization_manager.get_localized_message(state_key),
             )
 
         return predicate
@@ -162,7 +170,7 @@ class CoreElement(abc.ABC):
                 locator=self.locator,
                 state=self._element_state,
                 timeout=timeout,
-                name=self.name
+                name=self.name,
             )
         except NoSuchElementException as e:
             if self.logger_configuration.log_page_source:
@@ -171,10 +179,14 @@ class CoreElement(abc.ABC):
 
     def log_page_source(self, exception: WebDriverException):
         try:
-            self.logger.debug(f"Page source:{self.application.driver.page_source}", exc_info=exception)
+            self.logger.debug(
+                f"Page source:{self.application.driver.page_source}", exc_info=exception
+            )
         except WebDriverException as e:
             self.logger.error(e.msg)
-            self.logger.debug("An exception occurred while tried to save the page source", exc_info=e)
+            self.logger.debug(
+                "An exception occurred while tried to save the page source", exc_info=e
+            )
 
     @property
     def text(self) -> str:
@@ -193,4 +205,6 @@ class CoreElement(abc.ABC):
         return self.action_retrier.do_with_retry(function)
 
     def log_element_action(self, message_key: str, *args):
-        self.localized_logger.info_element_action(self.element_type, self.name, message_key, args)
+        self.localized_logger.info_element_action(
+            self.element_type, self.name, message_key, args
+        )

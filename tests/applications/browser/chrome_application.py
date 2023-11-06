@@ -6,16 +6,17 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 from py_selenium_auto_core.applications.application import Application
-from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
+from py_selenium_auto_core.configurations.timeout_configuration import (
+    TimeoutConfiguration,
+)
 
 
 class ChromeApplication(Application):
-
     def __init__(self, timeout_configuration: TimeoutConfiguration):
         for log_name in [
-            'selenium.webdriver.remote.remote_connection',
-            'selenium.webdriver.common.selenium_manager',
-            'urllib3.connectionpool',
+            "selenium.webdriver.remote.remote_connection",
+            "selenium.webdriver.common.selenium_manager",
+            "urllib3.connectionpool",
         ]:
             logger = logging.getLogger(log_name)
             logger.disabled = True

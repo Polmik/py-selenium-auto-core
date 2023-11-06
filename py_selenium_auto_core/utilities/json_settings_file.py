@@ -3,7 +3,9 @@ from __future__ import annotations
 import json
 from typing import overload, Any, Optional
 
-from py_selenium_auto_core.utilities.environment_configuration import EnvironmentConfiguration
+from py_selenium_auto_core.utilities.environment_configuration import (
+    EnvironmentConfiguration,
+)
 from py_selenium_auto_core.utilities.file_reader import FileReader
 
 
@@ -34,7 +36,9 @@ class JsonSettingsFile:
         if isinstance(setting_name, dict):
             self.setting_json: dict = setting_name
         else:
-            self.setting_json: dict = json.loads(FileReader.get_resource_file(setting_name, root_path))
+            self.setting_json: dict = json.loads(
+                FileReader.get_resource_file(setting_name, root_path)
+            )
 
     def get(self, key: str, default: Optional[Any] = None) -> Any:
         """Gets value from JSON

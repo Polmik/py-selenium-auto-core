@@ -10,7 +10,9 @@ from py_selenium_auto_core.locator.locator import Locator
 class ElementCacheHandler:
     """Allows to use cached element"""
 
-    def __init__(self, locator: Locator, name: str, state: ElementState, finder: ElementFinder):
+    def __init__(
+        self, locator: Locator, name: str, state: ElementState, finder: ElementFinder
+    ):
         self.__locator = locator
         self.__name = name
         self.__state = state
@@ -33,12 +35,16 @@ class ElementCacheHandler:
         try:
             is_displayed = self.__element.is_displayed()
             # refresh is needed only if the property is not match to expected element state
-            return (self.__state if custom_sate is None else custom_sate) == self.__state.Displayed and not is_displayed
+            return (
+                self.__state if custom_sate is None else custom_sate
+            ) == self.__state.Displayed and not is_displayed
         except Exception:
             # refresh is needed if the property is not available
             return True
 
-    def get_element(self, timeout: float = None, custom_sate: ElementState = None) -> WebElement:
+    def get_element(
+        self, timeout: float = None, custom_sate: ElementState = None
+    ) -> WebElement:
         """Allows to get cached element
 
         Args:

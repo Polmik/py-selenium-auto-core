@@ -4,7 +4,6 @@ from tests.utilities.test_retrier import TestRetrier
 
 
 class TestActionRetrier(TestRetrier):
-
     handled_exceptions = [ValueError]
 
     @property
@@ -15,10 +14,14 @@ class TestActionRetrier(TestRetrier):
         BrowserServices.Instance.service_provider.action_retrier()
 
     def test_retrier_should_work_once(self):
-        self.retrier_should_work_once(lambda: self.action_retrier.do_with_retry(lambda: None))
+        self.retrier_should_work_once(
+            lambda: self.action_retrier.do_with_retry(lambda: None)
+        )
 
     def test_retrier_should_work_once_with_return(self):
-        self.retrier_should_work_once(lambda: self.action_retrier.do_with_retry(lambda: 1))
+        self.retrier_should_work_once(
+            lambda: self.action_retrier.do_with_retry(lambda: 1)
+        )
 
     def test_retrier_should_wait_polling_interval(self):
         throw_exception = [True]
@@ -29,7 +32,9 @@ class TestActionRetrier(TestRetrier):
                 raise ValueError
 
         self.retrier_should_wait_polling_interval(
-            lambda: self.action_retrier.do_with_retry(predicate, self.handled_exceptions)
+            lambda: self.action_retrier.do_with_retry(
+                predicate, self.handled_exceptions
+            )
         )
 
     def test_retrier_should_wait_polling_interval_with_return(self):
@@ -42,7 +47,9 @@ class TestActionRetrier(TestRetrier):
             return True
 
         self.retrier_should_wait_polling_interval(
-            lambda: self.action_retrier.do_with_retry(predicate, self.handled_exceptions)
+            lambda: self.action_retrier.do_with_retry(
+                predicate, self.handled_exceptions
+            )
         )
 
     def test_retrier_should_throw__unhandled_exception(self):
@@ -65,5 +72,7 @@ class TestActionRetrier(TestRetrier):
         self.retrier_should_work_correct_times(
             ValueError,
             actual_attempts,
-            lambda: self.action_retrier.do_with_retry(predicate, self.handled_exceptions),
+            lambda: self.action_retrier.do_with_retry(
+                predicate, self.handled_exceptions
+            ),
         )
