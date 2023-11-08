@@ -2,7 +2,9 @@ import os
 
 import pytest
 
-from py_selenium_auto_core.configurations.logger_configuration import LoggerConfiguration
+from py_selenium_auto_core.configurations.logger_configuration import (
+    LoggerConfiguration,
+)
 from py_selenium_auto_core.localization.localization_manager import LocalizationManager
 from py_selenium_auto_core.logging.logger import Logger
 from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
@@ -10,13 +12,8 @@ from tests.test_without_application import TestWithoutApplication
 
 
 class DynamicConfiguration(LoggerConfiguration):
-
     def __init__(self, language: str):
-        super().__init__({
-            "logger": {
-                "language": language
-            }
-        })
+        super().__init__({"logger": {"language": language}})
 
     @property
     def language(self) -> str:
@@ -24,7 +21,6 @@ class DynamicConfiguration(LoggerConfiguration):
 
 
 class TestLocalizationManager(TestWithoutApplication):
-
     clicking_key: str = "loc.clicking"
     clicking_value_en: str = "Clicking"
     clicking_value_ru: str = "Клик"
@@ -89,46 +85,34 @@ class TestLocalizationManager(TestWithoutApplication):
         unknown_key = "loc.unknown.fake.key"
         assert unknown_key == self.service_provider.localization_manager().get_localized_message(unknown_key)
 
-    @pytest.mark.parametrize(
-        "language",
-        supported_languages
-    )
-    @pytest.mark.parametrize(
-        "message_key",
-        keys_without_params
-    )
+    @pytest.mark.parametrize("language", supported_languages)
+    @pytest.mark.parametrize("message_key", keys_without_params)
     def test_return_non_key_values_and_not_empty_values_for_keys_without_params(self, language, message_key):
         configuration = DynamicConfiguration(language)
         localized_value = LocalizationManager(configuration, Logger()).get_localized_message(message_key)
         assert localized_value != message_key, "Value should be defined in resource files"
         assert len(localized_value) > 0, "Value should not be empty"
 
-    def test_return_non_key_value_for_keys_present_in_core_if_language_missed_in_sibling_assembly(self):
+    def test_return_non_key_value_for_keys_present_in_core_if_language_missed_in_sibling_assembly(
+        self,
+    ):
         configuration = DynamicConfiguration("en")
         localized_value = LocalizationManager(
-            configuration,
-            Logger(),
-            RootPathHelper.calling_root_path()
+            configuration, Logger(), RootPathHelper.calling_root_path()
         ).get_localized_message(self.clicking_key)
         assert self.clicking_value_en == localized_value, "Value should match to expected"
 
-    def test_return_non_key_value_for_keys_present_in_core_if_key_missed_in_sibling_assembly(self):
+    def test_return_non_key_value_for_keys_present_in_core_if_key_missed_in_sibling_assembly(
+        self,
+    ):
         configuration = DynamicConfiguration("ru")
         localized_value = LocalizationManager(
-            configuration,
-            Logger(),
-            RootPathHelper.calling_root_path()
+            configuration, Logger(), RootPathHelper.calling_root_path()
         ).get_localized_message(self.clicking_key)
         assert self.clicking_value_ru == localized_value, "Value should match to expected"
 
-    @pytest.mark.parametrize(
-        "language",
-        supported_languages
-    )
-    @pytest.mark.parametrize(
-        "message_key",
-        keys_with_params
-    )
+    @pytest.mark.parametrize("language", supported_languages)
+    @pytest.mark.parametrize("message_key", keys_with_params)
     def test_return_non_key_values_and_not_empty_values_for_keys_with_params(self, language, message_key):
         configuration = DynamicConfiguration(language)
         try:
@@ -137,14 +121,8 @@ class TestLocalizationManager(TestWithoutApplication):
             return
         assert False, "There must be an error"
 
-    @pytest.mark.parametrize(
-        "language",
-        supported_languages
-    )
-    @pytest.mark.parametrize(
-        "message_key",
-        keys_with_params
-    )
+    @pytest.mark.parametrize("language", supported_languages)
+    @pytest.mark.parametrize("message_key", keys_with_params)
     def test_throws_format_exception_when_keys_require_params(self, language, message_key):
         configuration = DynamicConfiguration(language)
         params = ["a", "b", "c"]

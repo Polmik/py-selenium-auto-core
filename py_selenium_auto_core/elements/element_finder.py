@@ -21,12 +21,12 @@ class ElementFinder:
         self.__logger = logger
 
     def find_element(
-            self,
-            locator: Locator,
-            state: ElementState | Callable[[WebElement], bool] = ElementState.ExistsInAnyState,
-            state_name: str = "desired",
-            timeout: float = None,
-            name: str = None
+        self,
+        locator: Locator,
+        state: ElementState | Callable[[WebElement], bool] = ElementState.ExistsInAnyState,
+        state_name: str = "desired",
+        timeout: float = None,
+        name: str = None,
     ) -> WebElement:
         """Finds element
 
@@ -51,22 +51,22 @@ class ElementFinder:
                 state=desired_state.element_state_condition,
                 state_name=desired_state.state_name,
                 timeout=timeout,
-                name=name
+                name=name,
             )
         elif isinstance(state, Callable):
             desired_state = DesiredState(state, state_name)
             desired_state.is_catching_timeout_exception = False
             desired_state.is_throwing_no_such_element_exception = True
-            return self.__find_elements(locator=locator, state=desired_state, timeout=timeout, name=name)[0]
+            return self._find_elements(locator=locator, state=desired_state, timeout=timeout, name=name)[0]
 
         raise ValueError("Incorrect type of state")
 
     def find_elements(
-            self,
-            locator: Locator,
-            state: ElementState | DesiredState | Callable[[Any], bool] = ElementState.ExistsInAnyState,
-            timeout: float = None,
-            name: str = None
+        self,
+        locator: Locator,
+        state: ElementState | DesiredState | Callable[[Any], bool] = ElementState.ExistsInAnyState,
+        timeout: float = None,
+        name: str = None,
     ) -> List[WebElement]:
         """Finds elements
 
@@ -90,25 +90,30 @@ class ElementFinder:
             desired_state.is_catching_timeout_exception = True
             return self.find_elements(locator, desired_state, timeout, name)
         elif isinstance(state, DesiredState):
-            return self.__find_elements(locator, state, timeout, name)
+            return self._find_elements(locator, state, timeout, name)
         raise ValueError("Incorrect type of state")
 
     def _resolve_state(self, state: ElementState) -> DesiredState:
-        if state.Displayed is ElementState.Displayed:
+        if state == ElementState.Displayed:
+
             def element_state_condition(element: WebElement) -> bool:
                 return element.is_displayed()
-        elif state.ExistsInAnyState is ElementState.ExistsInAnyState:
+
+        elif state == ElementState.ExistsInAnyState:
+
             def element_state_condition(element: WebElement) -> bool:
                 return True
+
         else:
-            raise NotImplementedError(f"{state} state is not recognized")
+            raise ValueError(f"{state} state is not recognized")
         return DesiredState(function_condition=element_state_condition, state_name=state.name)
 
-    def __find_elements(self, locator: Locator, state: DesiredState, timeout, name) -> List[WebElement]:
+    def _find_elements(self, locator: Locator, state: DesiredState, timeout, name) -> List[WebElement]:
         found_elements: List[WebElement] = []
         result_elements: List[WebElement] = []
 
         try:
+
             def predicate(driver: WebDriver) -> bool:
                 found_elements.extend(driver.find_elements(by=locator.by, value=locator.value))
                 result_elements.extend([el for el in found_elements if state.element_state_condition(el)])
@@ -116,23 +121,27 @@ class ElementFinder:
 
             self.__conditional_wait.wait_for_driver(predicate, timeout)
         except TimeoutException as e:
-            self.__handle_timeout_exception(e, state, locator, found_elements, name)
+            self._handle_timeout_exception(e, state, locator, found_elements, name)
         return result_elements
 
-    def __handle_timeout_exception(
-            self,
-            exception: TimeoutException,
-            desired_state: DesiredState,
-            locator: Locator,
-            found_elements: list,
-            name=None
+    def _handle_timeout_exception(
+        self,
+        exception: TimeoutException,
+        desired_state: DesiredState,
+        locator: Locator,
+        found_elements: list,
+        name=None,
     ) -> None:
         if name is None or name == "":
-            message = f"No elements with locator '{locator.by}: {locator.value}'" \
-                      f" were found in {desired_state.state_name} state"
+            message = (
+                f"No elements with locator '{locator.by}: {locator.value}'"
+                f" were found in {desired_state.state_name} state"
+            )
         else:
-            message = f"Element [{name}] was not found by locator" \
-                      f" '{locator.by}: {locator.value}' in {desired_state.state_name} state"
+            message = (
+                f"Element [{name}] was not found by locator"
+                f" '{locator.by}: {locator.value}' in {desired_state.state_name} state"
+            )
 
         if desired_state.is_catching_timeout_exception:
             if not any(found_elements):
@@ -142,14 +151,14 @@ class ElementFinder:
                     "loc.no.elements.found.in.state",
                     None,
                     locator.to_string(),
-                    desired_state.state_name
+                    desired_state.state_name,
                 )
             else:
                 self.__logger.debug(
                     "loc.elements.were.found.but.not.in.state",
                     None,
                     locator.to_string(),
-                    desired_state.state_name
+                    desired_state.state_name,
                 )
         else:
             if desired_state.is_throwing_no_such_element_exception and not any(found_elements):

@@ -5,19 +5,18 @@ from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
 
 
 class FakeSettingsFile(JsonSettingsFile):
-
     def __init__(self):
         super().__init__({})
 
 
 class TestCustomConfiguration:
-
     service_provider: ServiceProvider = None
     settings_file: FakeSettingsFile = FakeSettingsFile()
 
     def setup_method(self, method=None):
         def _predicate(service):
             raise NotImplementedError
+
         self.service_provider = Startup.configure_services(
             _predicate,
             self.settings_file,

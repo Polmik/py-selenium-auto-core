@@ -6,7 +6,9 @@ from selenium.common import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
+from py_selenium_auto_core.configurations.timeout_configuration import (
+    TimeoutConfiguration,
+)
 
 if TYPE_CHECKING:
     from py_selenium_auto_core.applications.startup import ServiceProvider
@@ -15,7 +17,11 @@ if TYPE_CHECKING:
 class ConditionalWait:
     """This class is used for waiting any conditions."""
 
-    def __init__(self, timeout_configuration: TimeoutConfiguration, service_provider: 'ServiceProvider'):
+    def __init__(
+        self,
+        timeout_configuration: TimeoutConfiguration,
+        service_provider: "ServiceProvider",
+    ):
         """ConditionalWait constructor
 
         Args:
@@ -26,12 +32,12 @@ class ConditionalWait:
         self.__service_provider = service_provider
 
     def wait_for_driver(
-            self,
-            function: Callable[[WebDriver], Any],
-            timeout: float = None,
-            polling_interval: float = None,
-            message: str = None,
-            exceptions_to_ignore: List = None
+        self,
+        function: Callable[[WebDriver], Any],
+        timeout: float = None,
+        polling_interval: float = None,
+        message: str = None,
+        exceptions_to_ignore: List = None,
     ) -> Any:
         """Wait for some object from condition with timeout using Selenium WebDriver.
 
@@ -66,11 +72,11 @@ class ConditionalWait:
         return result
 
     def wait_for_condition(
-            self,
-            function: Callable[[], bool],
-            timeout: float = None,
-            polling_interval: float = None,
-            exceptions_to_ignore: list = None
+        self,
+        function: Callable[[], bool],
+        timeout: float = None,
+        polling_interval: float = None,
+        exceptions_to_ignore: list = None,
     ) -> bool:
         """Wait for some condition within timeout.
 
@@ -83,6 +89,7 @@ class ConditionalWait:
         Returns:
             True if condition satisfied and false otherwise.
         """
+
         def predicate() -> bool:
             self.wait_for_true(
                 function=function,
@@ -98,12 +105,12 @@ class ConditionalWait:
         )
 
     def wait_for_true(
-            self,
-            function: Callable[[], bool],
-            timeout: float = None,
-            polling_interval: float = None,
-            message: str = None,
-            exceptions_to_ignore: list = None
+        self,
+        function: Callable[[], bool],
+        timeout: float = None,
+        polling_interval: float = None,
+        message: str = None,
+        exceptions_to_ignore: list = None,
     ) -> None:
         """Wait for some condition within timeout.
 
@@ -138,10 +145,7 @@ class ConditionalWait:
         return exception_message
 
     @staticmethod
-    def _is_condition_satisfied(
-            function: Callable[[], bool],
-            exceptions_to_ignore: List
-    ) -> bool:
+    def _is_condition_satisfied(function: Callable[[], bool], exceptions_to_ignore: List) -> bool:
         try:
             return function()
         except Exception as ex:

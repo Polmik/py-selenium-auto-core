@@ -6,7 +6,6 @@ from py_selenium_auto_core.applications.startup import ServiceProvider, Startup
 
 
 class CoreServices(abc.ABC):
-
     _app_container: Application = None
     _service_provider_container: ServiceProvider = None
 
@@ -20,9 +19,9 @@ class CoreServices(abc.ABC):
 
     @classmethod
     def _get_service_provider(
-            cls,
-            application_provider: Callable[[ServiceProvider], Application],
-            service_provider: Callable[[], ServiceProvider] = None
+        cls,
+        application_provider: Callable[[ServiceProvider], Application],
+        service_provider: Callable[[], ServiceProvider] = None,
     ) -> ServiceProvider:
         if service_provider is not None:
             cls._service_provider_container = service_provider()
@@ -32,9 +31,9 @@ class CoreServices(abc.ABC):
 
     @classmethod
     def _get_application(
-            cls,
-            application_provider: Callable[[ServiceProvider], Application],
-            service_provider: Callable[[], ServiceProvider] = None
+        cls,
+        application_provider: Callable[[ServiceProvider], Application],
+        service_provider: Callable[[], ServiceProvider] = None,
     ):
         if not cls._is_application_started():
             cls._app_container = application_provider(

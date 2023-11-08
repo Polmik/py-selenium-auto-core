@@ -4,7 +4,6 @@ from tests.test_without_application import TestWithoutApplication
 
 
 class TestConfiguration(TestWithoutApplication):
-
     def setup_method(self, method=None):
         os.environ["profile"] = "custom"
         super().setup_method()

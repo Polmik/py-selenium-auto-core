@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional
 
 from selenium.common import WebDriverException
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -34,8 +34,11 @@ class TestWithBrowser:
 
 
 class CustomStartup(Startup):
-
     @staticmethod
-    def configure_services(application_provider: Callable, settings: JsonSettingsFile = None) -> ServiceProvider:
+    def configure_services(
+        application_provider: Callable,
+        settings: Optional[JsonSettingsFile] = None,
+        service_provider: Optional[ServiceProvider] = None,
+    ) -> ServiceProvider:
         service_provider = Startup.configure_services(application_provider, settings)
         return service_provider

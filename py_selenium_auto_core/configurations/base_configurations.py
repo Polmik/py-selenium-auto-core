@@ -6,7 +6,6 @@ from py_selenium_auto_core.utilities.json_settings_file import JsonSettingsFile
 
 
 class BaseConfiguration(abc.ABC):
-
     def __init__(self, settings: dict | JsonSettingsFile, node_name: str):
         """Instantiates class using JsonSettingsFile or dict with general settings
 

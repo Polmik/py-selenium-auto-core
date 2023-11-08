@@ -15,11 +15,11 @@ class ElementStateProvider:
     """
 
     def __init__(
-            self,
-            locator: Locator,
-            conditional_wait: ConditionalWait,
-            element_finder: ElementFinder,
-            log_element_state: Callable[[str, str], None]
+        self,
+        locator: Locator,
+        conditional_wait: ConditionalWait,
+        element_finder: ElementFinder,
+        log_element_state: Callable[[str, str], None],
     ):
         self.__locator = locator
         self.__conditional_wait = conditional_wait
@@ -55,8 +55,10 @@ class ElementStateProvider:
         Returns:
             True if element displayed after waiting, false otherwise
         """
+
         def _predicate():
             return self.__is_any_element_found(timeout, ElementState.Displayed)
+
         return self.__do_and_log_wait_for_state(_predicate, "displayed", timeout)
 
     def wait_for_not_displayed(self, timeout: float = None) -> bool:
@@ -68,8 +70,10 @@ class ElementStateProvider:
         Returns:
             True if element does not display after waiting, false otherwise
         """
+
         def _predicate():
             return self.__conditional_wait.wait_for_condition(lambda: not self.is_displayed(), timeout)
+
         return self.__do_and_log_wait_for_state(_predicate, "not.displayed", timeout)
 
     def wait_for_exist(self, timeout: float = None) -> bool:
@@ -81,8 +85,10 @@ class ElementStateProvider:
         Returns:
             True if element exist after waiting, false otherwise
         """
+
         def _predicate():
             return self.__is_any_element_found(timeout, ElementState.ExistsInAnyState)
+
         return self.__do_and_log_wait_for_state(_predicate, "exist", timeout)
 
     def wait_for_not_exist(self, timeout: float = None) -> bool:
@@ -94,8 +100,10 @@ class ElementStateProvider:
         Returns:
             True if element does not exist after waiting, false otherwise
         """
+
         def _predicate():
             return self.__conditional_wait.wait_for_condition(lambda: not self.is_exist(), timeout)
+
         return self.__do_and_log_wait_for_state(_predicate, "not.exist", timeout)
 
     def wait_for_enabled(self, timeout: float = None) -> bool:
@@ -110,8 +118,10 @@ class ElementStateProvider:
         Exception:
             NoSuchElementException: Throws when timeout exceeded and element not found
         """
+
         def _predicate():
             return self.__is_element_in_desired_state(lambda e: self.__is_element_enabled(e), "ENABLED", timeout)
+
         return self.__do_and_log_wait_for_state(_predicate, "enabled", timeout)
 
     def wait_for_not_enabled(self, timeout: float = None) -> bool:
@@ -126,12 +136,12 @@ class ElementStateProvider:
         Exception:
             NoSuchElementException: Throws when timeout exceeded and element not found
         """
+
         def _predicate():
             return self.__is_element_in_desired_state(
-                lambda e: not self.__is_element_enabled(e),
-                "NOT ENABLED",
-                timeout
+                lambda e: not self.__is_element_enabled(e), "NOT ENABLED", timeout
             )
+
         return self.__do_and_log_wait_for_state(_predicate, "not.enabled", timeout)
 
     def wait_for_clickable(self, timeout: float = None):

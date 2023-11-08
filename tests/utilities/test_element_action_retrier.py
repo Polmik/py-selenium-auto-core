@@ -7,11 +7,12 @@ from tests.utilities.test_retrier import TestRetrier
 
 
 class TestElementActionRetrier(TestRetrier):
-
-    @pytest.fixture(params=[
-        InvalidElementStateException,
-        StaleElementReferenceException,
-    ])
+    @pytest.fixture(
+        params=[
+            InvalidElementStateException,
+            StaleElementReferenceException,
+        ]
+    )
     def exception(self, request):
         return request.param
 
@@ -36,9 +37,7 @@ class TestElementActionRetrier(TestRetrier):
                 throw_exception[0] = False
                 raise exception
 
-        self.retrier_should_wait_polling_interval(
-            lambda: self.element_action_retrier.do_with_retry(predicate)
-        )
+        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(predicate))
 
     def test_retrier_should_wait_polling_interval_with_return(self, exception):
         throw_exception = [True]
@@ -49,9 +48,7 @@ class TestElementActionRetrier(TestRetrier):
                 raise exception
             return True
 
-        self.retrier_should_wait_polling_interval(
-            lambda: self.element_action_retrier.do_with_retry(predicate)
-        )
+        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(predicate))
 
     def test_retrier_should_throw__unhandled_exception(self):
         def predicate():

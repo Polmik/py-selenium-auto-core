@@ -1,15 +1,20 @@
 import abc
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, TYPE_CHECKING, Type, TypeVar, List
 
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
 from py_selenium_auto_core.applications.application import Application
-from py_selenium_auto_core.configurations.element_cache_configuration import ElementCacheConfiguration
-from py_selenium_auto_core.configurations.logger_configuration import LoggerConfiguration
+from py_selenium_auto_core.configurations.element_cache_configuration import (
+    ElementCacheConfiguration,
+)
+from py_selenium_auto_core.configurations.logger_configuration import (
+    LoggerConfiguration,
+)
 from py_selenium_auto_core.elements.constants.element_state import ElementState
+from py_selenium_auto_core.elements.constants.elements_count import ElementsCount
 from py_selenium_auto_core.elements.element_cache_handler import ElementCacheHandler
-from py_selenium_auto_core.elements.element_factory import ElementFactory
+
 from py_selenium_auto_core.elements.element_finder import ElementFinder
 from py_selenium_auto_core.elements.element_state_provider import ElementStateProvider
 from py_selenium_auto_core.localization.localization_manager import LocalizationManager
@@ -18,6 +23,11 @@ from py_selenium_auto_core.locator.locator import Locator
 from py_selenium_auto_core.logging.logger import Logger
 from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
 from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
+
+if TYPE_CHECKING:
+    from py_selenium_auto_core.elements.element_factory import ElementFactory
+
+T = TypeVar("T", bound='CoreElement', covariant=True)
 
 
 class CoreElement(abc.ABC):
@@ -82,7 +92,7 @@ class CoreElement(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def factory(self) -> ElementFactory:
+    def factory(self) -> 'ElementFactory':
         raise NotImplementedError("Abstract")
 
     @property
@@ -120,7 +130,7 @@ class CoreElement(abc.ABC):
                 self.element_type,
                 self.name,
                 message_key,
-                self.localization_manager.get_localized_message(state_key)
+                self.localization_manager.get_localized_message(state_key),
             )
 
         return predicate
@@ -130,11 +140,59 @@ class CoreElement(abc.ABC):
         self.log_element_action("loc.clicking")
         self.do_with_retry(lambda: self.get_element().click())
 
-    def find_child_element(self):
-        raise NotImplementedError
+    def find_child_element(
+        self,
+        element_type: Type[T],
+        child_locator: Locator,
+        name: str = None,
+        state: ElementState = ElementState.Displayed,
+    ) -> T:
+        """Finds child element by its locator relative to parent element
 
-    def find_child_elements(self):
-        raise NotImplementedError
+        Args:
+            element_type: Type of the element to create
+            child_locator: Locator of child element relative to its parent
+                Supports:
+                    Locator(By.XPATH, "./div") or Locator(By.XPATH, "/div") or Locator(By.XPATH, "/div[@id]")
+                    Locator(By.XPATH, ".//div") or Locator(By.XPATH, "//div") or Locator(By.XPATH, "//div[@id]")
+                    Locator(By.XPATH, "div") or Locator(By.XPATH, "div[@id]")
+                    Locator(By.CLASS_NAME, "class_name")
+                    Locator(By.TAG_NAME, "tag_name")
+            name: Child element name
+            state: Child element state
+
+        Returns:
+            Instance of child element
+        """
+        return self.factory.find_child_element(element_type, self, child_locator, name, state)
+
+    def find_child_elements(
+        self,
+        element_type: Type[T],
+        child_locator: Locator,
+        name: str = None,
+        expected_count: ElementsCount = ElementsCount.Any,
+        state: ElementState = ElementState.Displayed,
+    ) -> List[T]:
+        """Finds list of child elements by their locator relative to parent element
+
+        Args:
+            element_type: Type of the element to create
+            child_locator: Locator of child elements relative to their parent
+                Supports:
+                    Locator(By.XPATH, "./div") or Locator(By.XPATH, "/div") or Locator(By.XPATH, "/div[@id]")
+                    Locator(By.XPATH, ".//div") or Locator(By.XPATH, "//div") or Locator(By.XPATH, "//div[@id]")
+                    Locator(By.XPATH, "div") or Locator(By.XPATH, "div[@id]")
+                    Locator(By.CLASS_NAME, "class_name")
+                    Locator(By.TAG_NAME, "tag_name")
+            name: Child elements name
+            expected_count: Expected number of elements that have to be found (zero, more then zero, any)
+            state: Child elements state
+
+        Returns:
+            List of child elements
+        """
+        return self.factory.find_child_elements(element_type, self, child_locator, name, expected_count, state)
 
     def get_attribute(self, attr) -> str:
         """Gets element attribute value by its name"""
@@ -162,7 +220,7 @@ class CoreElement(abc.ABC):
                 locator=self.locator,
                 state=self._element_state,
                 timeout=timeout,
-                name=self.name
+                name=self.name,
             )
         except NoSuchElementException as e:
             if self.logger_configuration.log_page_source:

@@ -4,7 +4,6 @@ from tests.utilities.test_retrier import TestRetrier
 
 
 class TestActionRetrier(TestRetrier):
-
     handled_exceptions = [ValueError]
 
     @property
