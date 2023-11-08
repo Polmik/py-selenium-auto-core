@@ -23,8 +23,7 @@ class ElementFinder:
     def find_element(
         self,
         locator: Locator,
-        state: ElementState
-        | Callable[[WebElement], bool] = ElementState.ExistsInAnyState,
+        state: ElementState | Callable[[WebElement], bool] = ElementState.ExistsInAnyState,
         state_name: str = "desired",
         timeout: float = None,
         name: str = None,
@@ -58,7 +57,7 @@ class ElementFinder:
             desired_state = DesiredState(state, state_name)
             desired_state.is_catching_timeout_exception = False
             desired_state.is_throwing_no_such_element_exception = True
-            return self.__find_elements(
+            return self._find_elements(
                 locator=locator, state=desired_state, timeout=timeout, name=name
             )[0]
 
@@ -67,9 +66,7 @@ class ElementFinder:
     def find_elements(
         self,
         locator: Locator,
-        state: ElementState
-        | DesiredState
-        | Callable[[Any], bool] = ElementState.ExistsInAnyState,
+        state: ElementState | DesiredState | Callable[[Any], bool] = ElementState.ExistsInAnyState,
         timeout: float = None,
         name: str = None,
     ) -> List[WebElement]:
@@ -95,27 +92,27 @@ class ElementFinder:
             desired_state.is_catching_timeout_exception = True
             return self.find_elements(locator, desired_state, timeout, name)
         elif isinstance(state, DesiredState):
-            return self.__find_elements(locator, state, timeout, name)
+            return self._find_elements(locator, state, timeout, name)
         raise ValueError("Incorrect type of state")
 
     def _resolve_state(self, state: ElementState) -> DesiredState:
-        if state.Displayed is ElementState.Displayed:
+        if state == ElementState.Displayed:
 
             def element_state_condition(element: WebElement) -> bool:
                 return element.is_displayed()
 
-        elif state.ExistsInAnyState is ElementState.ExistsInAnyState:
+        elif state == ElementState.ExistsInAnyState:
 
             def element_state_condition(element: WebElement) -> bool:
                 return True
 
         else:
-            raise NotImplementedError(f"{state} state is not recognized")
+            raise ValueError(f"{state} state is not recognized")
         return DesiredState(
             function_condition=element_state_condition, state_name=state.name
         )
 
-    def __find_elements(
+    def _find_elements(
         self, locator: Locator, state: DesiredState, timeout, name
     ) -> List[WebElement]:
         found_elements: List[WebElement] = []
@@ -134,10 +131,10 @@ class ElementFinder:
 
             self.__conditional_wait.wait_for_driver(predicate, timeout)
         except TimeoutException as e:
-            self.__handle_timeout_exception(e, state, locator, found_elements, name)
+            self._handle_timeout_exception(e, state, locator, found_elements, name)
         return result_elements
 
-    def __handle_timeout_exception(
+    def _handle_timeout_exception(
         self,
         exception: TimeoutException,
         desired_state: DesiredState,
@@ -174,8 +171,6 @@ class ElementFinder:
                     desired_state.state_name,
                 )
         else:
-            if desired_state.is_throwing_no_such_element_exception and not any(
-                found_elements
-            ):
+            if desired_state.is_throwing_no_such_element_exception and not any(found_elements):
                 raise NoSuchElementException(f"{message}: {exception.msg}")
             raise TimeoutException(f"{exception.msg}: {message}")

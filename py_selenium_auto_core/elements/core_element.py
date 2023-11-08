@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, TYPE_CHECKING
 
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
@@ -13,7 +13,7 @@ from py_selenium_auto_core.configurations.logger_configuration import (
 )
 from py_selenium_auto_core.elements.constants.element_state import ElementState
 from py_selenium_auto_core.elements.element_cache_handler import ElementCacheHandler
-from py_selenium_auto_core.elements.element_factory import ElementFactory
+
 from py_selenium_auto_core.elements.element_finder import ElementFinder
 from py_selenium_auto_core.elements.element_state_provider import ElementStateProvider
 from py_selenium_auto_core.localization.localization_manager import LocalizationManager
@@ -22,7 +22,8 @@ from py_selenium_auto_core.locator.locator import Locator
 from py_selenium_auto_core.logging.logger import Logger
 from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
 from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
-
+if TYPE_CHECKING:
+    from py_selenium_auto_core.elements.element_factory import ElementFactory
 
 class CoreElement(abc.ABC):
     """Describes behavior of any UI element"""
@@ -90,7 +91,7 @@ class CoreElement(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def factory(self) -> ElementFactory:
+    def factory(self) -> 'ElementFactory':
         raise NotImplementedError("Abstract")
 
     @property

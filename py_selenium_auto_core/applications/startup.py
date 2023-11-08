@@ -16,6 +16,7 @@ from py_selenium_auto_core.configurations.retry_configuration import RetryConfig
 from py_selenium_auto_core.configurations.timeout_configuration import (
     TimeoutConfiguration,
 )
+from py_selenium_auto_core.elements.element_factory import ElementFactory
 from py_selenium_auto_core.localization.localization_manager import LocalizationManager
 from py_selenium_auto_core.localization.localized_logger import LocalizedLogger
 from py_selenium_auto_core.logging.logger import Logger
@@ -72,6 +73,9 @@ class ServiceProvider(containers.DeclarativeContainer):
     )
     element_finder: Factory[ElementFinder] = Factory(
         ElementFinder, localized_logger, conditional_wait
+    )
+    element_factory: Factory[ElementFactory] = Factory(
+        ElementFactory, conditional_wait, element_finder, localization_manager
     )
 
 
