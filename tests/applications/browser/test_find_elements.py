@@ -1,8 +1,10 @@
 import pytest
+from dependency_injector.providers import Singleton
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from typing import Type, List
 
+from py_selenium_auto_core.configurations.timeout_configuration import TimeoutConfiguration
 from tests.applications.browser.test_with_browser import TestWithBrowser
 from py_selenium_auto_core.locator.locator import Locator
 from py_selenium_auto_core.elements.constants.element_state import ElementState
@@ -13,7 +15,26 @@ from tests.applications.browser.browser_services import BrowserServices
 from tests.applications.browser.elements.label import Label
 
 
-class TestFindElements(TestWithBrowser):
+class CustomTimeout(TimeoutConfiguration):
+    def __init__(self):
+        super().__init__({"timeouts": {}})
+
+    @property
+    def implicit(self) -> float:
+        return 0
+
+    @property
+    def condition(self) -> float:
+        return 3
+
+    @property
+    def polling_interval(self) -> float:
+        return 0.3
+
+
+class BaseTestFindElements(TestWithBrowser):
+    __test__ = False
+
     content_loc: Locator = Locator(By.XPATH, "//div[contains(@class,'example')]")
     hovers_url: str = f"{TestWithBrowser.test_site}/hovers"
     hidden_elements_loc = Locator(By.XPATH, "//h5")
@@ -22,14 +43,20 @@ class TestFindElements(TestWithBrowser):
     not_exist_element_loc = Locator(By.XPATH, "//div[@class='testtest']")
 
     def find_elements(
-            self,
-            element_type: Type[CoreElement],
-            locator: Locator,
-            name: str = None,
-            expected_count=ElementsCount.Any,
-            state: ElementState = ElementState.Displayed
+        self,
+        element_type: Type[CoreElement],
+        locator: Locator,
+        name: str = None,
+        expected_count=ElementsCount.Any,
+        state: ElementState = ElementState.Displayed,
     ) -> List[CoreElement]:
         return self.element_factory.find_elements(element_type, locator, name, expected_count, state)
+
+    @pytest.fixture
+    def reset_config(self, request):
+        BrowserServices.Instance.service_provider.timeout_configuration.override(Singleton(CustomTimeout))
+        request.addfinalizer(lambda: BrowserServices.Instance.service_provider.reset_override())
+        yield
 
     @property
     def element_factory(self) -> ElementFactory:
@@ -47,17 +74,17 @@ class TestFindElements(TestWithBrowser):
     @pytest.mark.parametrize(
         argnames=("count", "state", "expected_count"),
         argvalues=(
-                pytest.param(ElementsCount.MoreThenZero, ElementState.Displayed, 3),
-                pytest.param(ElementsCount.MoreThenZero, ElementState.ExistsInAnyState, 3),
-                pytest.param(ElementsCount.Any, ElementState.Displayed, 3),
-                pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 3),
-        )
+            pytest.param(ElementsCount.MoreThenZero, ElementState.Displayed, 3),
+            pytest.param(ElementsCount.MoreThenZero, ElementState.ExistsInAnyState, 3),
+            pytest.param(ElementsCount.Any, ElementState.Displayed, 3),
+            pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 3),
+        ),
     )
     def test_possible_to_find_elements_for_displayed_elements(
-            self,
-            count: ElementsCount,
-            state: ElementState,
-            expected_count: int,
+        self,
+        count: ElementsCount,
+        state: ElementState,
+        expected_count: int,
     ):
         elements_count = len(self.find_elements(Label, self.displayed_elements_loc, expected_count=count, state=state))
         assert elements_count == expected_count, f"Elements count for hidden elements should be {elements_count}"
@@ -65,17 +92,17 @@ class TestFindElements(TestWithBrowser):
     @pytest.mark.parametrize(
         argnames=("count", "state", "expected_count"),
         argvalues=(
-                pytest.param(ElementsCount.Zero, ElementState.Displayed, 0),
-                pytest.param(ElementsCount.MoreThenZero, ElementState.ExistsInAnyState, 3),
-                pytest.param(ElementsCount.Any, ElementState.Displayed, 0),
-                pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 3),
-        )
+            pytest.param(ElementsCount.Zero, ElementState.Displayed, 0),
+            pytest.param(ElementsCount.MoreThenZero, ElementState.ExistsInAnyState, 3),
+            pytest.param(ElementsCount.Any, ElementState.Displayed, 0),
+            pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 3),
+        ),
     )
     def test_possible_to_find_elements_for_hidden_elements(
-            self,
-            count: ElementsCount,
-            state: ElementState,
-            expected_count: int,
+        self,
+        count: ElementsCount,
+        state: ElementState,
+        expected_count: int,
     ):
         elements_count = len(self.find_elements(Label, self.hidden_elements_loc, expected_count=count, state=state))
         assert elements_count == expected_count, f"Elements count for hidden elements should be {elements_count}"
@@ -83,17 +110,17 @@ class TestFindElements(TestWithBrowser):
     @pytest.mark.parametrize(
         argnames=("count", "state", "expected_count"),
         argvalues=(
-                pytest.param(ElementsCount.Zero, ElementState.Displayed, 0),
-                pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState, 0),
-                pytest.param(ElementsCount.Any, ElementState.Displayed, 0),
-                pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 0),
-        )
+            pytest.param(ElementsCount.Zero, ElementState.Displayed, 0),
+            pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState, 0),
+            pytest.param(ElementsCount.Any, ElementState.Displayed, 0),
+            pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 0),
+        ),
     )
     def test_possible_to_find_elements_for_not_exists_elements(
-            self,
-            count: ElementsCount,
-            state: ElementState,
-            expected_count: int,
+        self,
+        count: ElementsCount,
+        state: ElementState,
+        expected_count: int,
     ):
         elements_count = len(self.find_elements(Label, self.not_exist_element_loc, expected_count=count, state=state))
         assert elements_count == expected_count, f"Elements count for not existing elements should be {elements_count}"
@@ -101,14 +128,15 @@ class TestFindElements(TestWithBrowser):
     @pytest.mark.parametrize(
         argnames=("count", "state"),
         argvalues=(
-                pytest.param(ElementsCount.Zero, ElementState.Displayed),
-                pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState),
-        )
+            pytest.param(ElementsCount.Zero, ElementState.Displayed),
+            pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState),
+        ),
     )
     def test_impossible_to_find_displayed_elements_with_wrong_arguments(
-            self,
-            count: ElementsCount,
-            state: ElementState
+        self,
+        reset_config,
+        count: ElementsCount,
+        state: ElementState,
     ):
         is_error = False
         try:
@@ -120,14 +148,12 @@ class TestFindElements(TestWithBrowser):
     @pytest.mark.parametrize(
         argnames=("count", "state"),
         argvalues=(
-                pytest.param(ElementsCount.MoreThenZero, ElementState.Displayed),
-                pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState),
-        )
+            pytest.param(ElementsCount.MoreThenZero, ElementState.Displayed),
+            pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState),
+        ),
     )
     def test_impossible_to_find_hidden_elements_with_wrong_arguments(
-            self,
-            count: ElementsCount,
-            state: ElementState
+        self, reset_config, count: ElementsCount, state: ElementState
     ):
         is_error = False
         error_message = ""
@@ -145,12 +171,13 @@ class TestFindElements(TestWithBrowser):
         argvalues=(
             pytest.param(ElementsCount.MoreThenZero, ElementState.Displayed),
             pytest.param(ElementsCount.MoreThenZero, ElementState.ExistsInAnyState),
-        )
+        ),
     )
     def test_impossible_to_find_not_exists_elements_with_wrong_arguments(
-            self,
-            count: ElementsCount,
-            state: ElementState
+        self,
+        reset_config,
+        count: ElementsCount,
+        state: ElementState,
     ):
         is_error = False
         try:
@@ -162,3 +189,7 @@ class TestFindElements(TestWithBrowser):
     def test_possible_to_work_with_elements_found_by_dotted_locator(self):
         found_elements = self.find_elements(Label, self.dotted_loc, expected_count=ElementsCount.MoreThenZero)
         [e.get_element() for e in found_elements]
+
+
+class TestFindElements(BaseTestFindElements):
+    __test__ = True
