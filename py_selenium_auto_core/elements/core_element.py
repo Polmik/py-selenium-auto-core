@@ -1,5 +1,5 @@
 import abc
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING, Type, TypeVar, List
 
 from selenium.common import WebDriverException, NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
@@ -12,6 +12,7 @@ from py_selenium_auto_core.configurations.logger_configuration import (
     LoggerConfiguration,
 )
 from py_selenium_auto_core.elements.constants.element_state import ElementState
+from py_selenium_auto_core.elements.constants.elements_count import ElementsCount
 from py_selenium_auto_core.elements.element_cache_handler import ElementCacheHandler
 
 from py_selenium_auto_core.elements.element_finder import ElementFinder
@@ -22,8 +23,12 @@ from py_selenium_auto_core.locator.locator import Locator
 from py_selenium_auto_core.logging.logger import Logger
 from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
 from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
+
 if TYPE_CHECKING:
     from py_selenium_auto_core.elements.element_factory import ElementFactory
+
+T = TypeVar("T", bound='CoreElement', covariant=True)
+
 
 class CoreElement(abc.ABC):
     """Describes behavior of any UI element"""
@@ -46,9 +51,7 @@ class CoreElement(abc.ABC):
         """Gets element state"""
         if self.cache_configuration.is_enabled:
             raise NotImplementedError
-        return ElementStateProvider(
-            self.locator, self.conditional_wait, self.finder, self.log_element_state
-        )
+        return ElementStateProvider(self.locator, self.conditional_wait, self.finder, self.log_element_state)
 
     @property
     def visual(self):
@@ -59,9 +62,7 @@ class CoreElement(abc.ABC):
     def cache(self) -> ElementCacheHandler:
         """Gets element cache handler"""
         if self._element_cache_handler is None:
-            self._element_cache_handler = ElementCacheHandler(
-                self.locator, self.name, self._element_state, self.finder
-            )
+            self._element_cache_handler = ElementCacheHandler(self.locator, self.name, self._element_state, self.finder)
         return self._element_cache_handler
 
     @property
@@ -139,11 +140,59 @@ class CoreElement(abc.ABC):
         self.log_element_action("loc.clicking")
         self.do_with_retry(lambda: self.get_element().click())
 
-    def find_child_element(self):
-        raise NotImplementedError
+    def find_child_element(
+        self,
+        element_type: Type[T],
+        child_locator: Locator,
+        name: str = None,
+        state: ElementState = ElementState.Displayed,
+    ) -> T:
+        """Finds child element by its locator relative to parent element
 
-    def find_child_elements(self):
-        raise NotImplementedError
+        Args:
+            element_type: Type of the element to create
+            child_locator: Locator of child element relative to its parent
+                Supports:
+                    Locator(By.XPATH, "./div") or Locator(By.XPATH, "/div") or Locator(By.XPATH, "/div[@id]")
+                    Locator(By.XPATH, ".//div") or Locator(By.XPATH, "//div") or Locator(By.XPATH, "//div[@id]")
+                    Locator(By.XPATH, "div") or Locator(By.XPATH, "div[@id]")
+                    Locator(By.CLASS_NAME, "class_name")
+                    Locator(By.TAG_NAME, "tag_name")
+            name: Child element name
+            state: Child element state
+
+        Returns:
+            Instance of child element
+        """
+        return self.factory.find_child_element(element_type, self, child_locator, name, state)
+
+    def find_child_elements(
+        self,
+        element_type: Type[T],
+        child_locator: Locator,
+        name: str = None,
+        expected_count: ElementsCount = ElementsCount.Any,
+        state: ElementState = ElementState.Displayed,
+    ) -> List[T]:
+        """Finds list of child elements by their locator relative to parent element
+
+        Args:
+            element_type: Type of the element to create
+            child_locator: Locator of child elements relative to their parent
+                Supports:
+                    Locator(By.XPATH, "./div") or Locator(By.XPATH, "/div") or Locator(By.XPATH, "/div[@id]")
+                    Locator(By.XPATH, ".//div") or Locator(By.XPATH, "//div") or Locator(By.XPATH, "//div[@id]")
+                    Locator(By.XPATH, "div") or Locator(By.XPATH, "div[@id]")
+                    Locator(By.CLASS_NAME, "class_name")
+                    Locator(By.TAG_NAME, "tag_name")
+            name: Child elements name
+            expected_count: Expected number of elements that have to be found (zero, more then zero, any)
+            state: Child elements state
+
+        Returns:
+            List of child elements
+        """
+        return self.factory.find_child_elements(element_type, self, child_locator, name, expected_count, state)
 
     def get_attribute(self, attr) -> str:
         """Gets element attribute value by its name"""
@@ -180,14 +229,10 @@ class CoreElement(abc.ABC):
 
     def log_page_source(self, exception: WebDriverException):
         try:
-            self.logger.debug(
-                f"Page source:{self.application.driver.page_source}", exc_info=exception
-            )
+            self.logger.debug(f"Page source:{self.application.driver.page_source}", exc_info=exception)
         except WebDriverException as e:
             self.logger.error(e.msg)
-            self.logger.debug(
-                "An exception occurred while tried to save the page source", exc_info=e
-            )
+            self.logger.debug("An exception occurred while tried to save the page source", exc_info=e)
 
     @property
     def text(self) -> str:
@@ -206,6 +251,4 @@ class CoreElement(abc.ABC):
         return self.action_retrier.do_with_retry(function)
 
     def log_element_action(self, message_key: str, *args):
-        self.localized_logger.info_element_action(
-            self.element_type, self.name, message_key, args
-        )
+        self.localized_logger.info_element_action(self.element_type, self.name, message_key, args)
