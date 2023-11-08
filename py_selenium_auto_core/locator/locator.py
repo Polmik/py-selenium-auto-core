@@ -19,3 +19,6 @@ class Locator:
 
     def to_string(self):
         return f"By.{str(self.by).upper().replace(' ', '_')}: {self.value}"
+
+    def __repr__(self):
+        return self.to_string()
