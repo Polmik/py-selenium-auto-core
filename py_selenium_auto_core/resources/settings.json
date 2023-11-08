@@ -1,7 +1,7 @@
 {
   "timeouts": {
     "timeoutImplicit": 0,
-    "timeoutCondition": 5,
+    "timeoutCondition": 30,
     "timeoutPollingInterval": 0.3,
     "timeoutCommand": 60
   },
