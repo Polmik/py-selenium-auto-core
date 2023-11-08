@@ -1,3 +1,11 @@
+v0.5.0
+* Added ElementFactory that provides methods to find child elements
+* Updated CoreElement
+    Added methods to find child elements
+* Added tests
+* Refactoring
+
+
 v0.4.4
 * Changed approach to override container. Added input parameter service_provider to Startup.configure_services()
     ServiceProvider.override(CustomServiceProvider)
