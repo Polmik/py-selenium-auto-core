@@ -44,42 +44,26 @@ class ServiceProvider(containers.DeclarativeContainer):
         ElementCacheConfiguration,
         settings_file,
     )
-    logger_configuration: Singleton[LoggerConfiguration] = Singleton(
-        LoggerConfiguration, settings_file
-    )
-    timeout_configuration: Singleton[TimeoutConfiguration] = Singleton(
-        TimeoutConfiguration, settings_file
-    )
-    retry_configuration: Singleton[RetryConfiguration] = Singleton(
-        RetryConfiguration, settings_file
-    )
-    localization_manager: Singleton[LocalizationManager] = Singleton(
-        LocalizationManager, logger_configuration, logger
-    )
+    logger_configuration: Singleton[LoggerConfiguration] = Singleton(LoggerConfiguration, settings_file)
+    timeout_configuration: Singleton[TimeoutConfiguration] = Singleton(TimeoutConfiguration, settings_file)
+    retry_configuration: Singleton[RetryConfiguration] = Singleton(RetryConfiguration, settings_file)
+    localization_manager: Singleton[LocalizationManager] = Singleton(LocalizationManager, logger_configuration, logger)
     localized_logger: Singleton[LocalizedLogger] = Singleton(
         LocalizedLogger,
         localization_manager,
         logger,
         logger_configuration,
     )
-    action_retrier: Singleton[ActionRetrier] = Singleton(
-        ActionRetrier, retry_configuration
-    )
-    element_action_retrier: Singleton[ElementActionRetrier] = Singleton(
-        ElementActionRetrier, retry_configuration
-    )
-    conditional_wait: Factory[ConditionalWait] = Factory(
-        ConditionalWait, timeout_configuration, __self__
-    )
-    element_finder: Factory[ElementFinder] = Factory(
-        ElementFinder, localized_logger, conditional_wait
-    )
+    action_retrier: Singleton[ActionRetrier] = Singleton(ActionRetrier, retry_configuration)
+    element_action_retrier: Singleton[ElementActionRetrier] = Singleton(ElementActionRetrier, retry_configuration)
+    conditional_wait: Factory[ConditionalWait] = Factory(ConditionalWait, timeout_configuration, __self__)
+    element_finder: Factory[ElementFinder] = Factory(ElementFinder, localized_logger, conditional_wait)
     element_factory: Factory[ElementFactory] = Factory(
         ElementFactory, conditional_wait, element_finder, localization_manager
     )
 
 
-T = TypeVar("T", bound=ServiceProvider)
+T = TypeVar("T", bound='ServiceProvider', covariant=True)
 
 
 class Startup:
@@ -125,13 +109,9 @@ class Startup:
             An instance of settings
         """
         profile_name = EnvironmentConfiguration.get_variable("profile")
-        settings_profile = (
-            "settings.json" if not profile_name else f"settings.{profile_name}.json"
-        )
+        settings_profile = "settings.json" if not profile_name else f"settings.{profile_name}.json"
         Logger.debug(f"Get settings from: {settings_profile}")
-        if FileReader.is_resource_file_exist(
-            settings_profile, root_path=RootPathHelper.calling_root_path()
-        ):
+        if FileReader.is_resource_file_exist(settings_profile, root_path=RootPathHelper.calling_root_path()):
             return JsonSettingsFile(
                 setting_name=settings_profile,
                 root_path=RootPathHelper.calling_root_path(),

@@ -34,9 +34,7 @@ class LocalizationManager:
 
     def get_localized_message(self, message_key: str, *args) -> str:
         local_to_use = (
-            self.__localization_file
-            if message_key in self.__localization_file
-            else self.__core_localization_file
+            self.__localization_file if message_key in self.__localization_file else self.__core_localization_file
         )
         if message_key in local_to_use:
             return local_to_use.get(message_key).format(*args)
@@ -44,9 +42,7 @@ class LocalizationManager:
         return message_key
 
     def __get_localization_file(self, language: str, root_path: str) -> dict:
-        resource_name = os.path.join(
-            self._lang_resource_dir, self._lang_resource_file.format(language)
-        )
+        resource_name = os.path.join(self._lang_resource_dir, self._lang_resource_file.format(language))
         root_path_to_use = (
             root_path
             if FileReader.is_resource_file_exist(resource_name, root_path)

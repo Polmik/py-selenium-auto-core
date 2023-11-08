@@ -43,9 +43,7 @@ class TestRetrier:
             f"and less than '{doubled_accuracy_polling_interval}'"
         )
 
-    def retrier_should_work_correct_times(
-        self, exception, actual_attempts, function: Callable
-    ):
+    def retrier_should_work_correct_times(self, exception, actual_attempts, function: Callable):
         try:
             function()
         except Exception as ex:

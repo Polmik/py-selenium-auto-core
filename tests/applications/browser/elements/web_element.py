@@ -23,7 +23,6 @@ from tests.applications.browser.browser_services import BrowserServices
 
 
 class WebElement(CoreElement, abc.ABC):
-
     def __init__(self, locator: Locator, name: str, element_state: ElementState):
         super().__init__(locator, name, element_state)
 

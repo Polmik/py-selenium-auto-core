@@ -24,14 +24,10 @@ class TestElementActionRetrier(TestRetrier):
         BrowserServices.Instance.service_provider.element_action_retrier()
 
     def test_retrier_should_work_once(self):
-        self.retrier_should_work_once(
-            lambda: self.element_action_retrier.do_with_retry(lambda: None)
-        )
+        self.retrier_should_work_once(lambda: self.element_action_retrier.do_with_retry(lambda: None))
 
     def test_retrier_should_work_once_with_return(self):
-        self.retrier_should_work_once(
-            lambda: self.element_action_retrier.do_with_retry(lambda: 1)
-        )
+        self.retrier_should_work_once(lambda: self.element_action_retrier.do_with_retry(lambda: 1))
 
     def test_retrier_should_wait_polling_interval(self, exception):
         throw_exception = [True]
@@ -41,9 +37,7 @@ class TestElementActionRetrier(TestRetrier):
                 throw_exception[0] = False
                 raise exception
 
-        self.retrier_should_wait_polling_interval(
-            lambda: self.element_action_retrier.do_with_retry(predicate)
-        )
+        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(predicate))
 
     def test_retrier_should_wait_polling_interval_with_return(self, exception):
         throw_exception = [True]
@@ -54,9 +48,7 @@ class TestElementActionRetrier(TestRetrier):
                 raise exception
             return True
 
-        self.retrier_should_wait_polling_interval(
-            lambda: self.element_action_retrier.do_with_retry(predicate)
-        )
+        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(predicate))
 
     def test_retrier_should_throw__unhandled_exception(self):
         def predicate():

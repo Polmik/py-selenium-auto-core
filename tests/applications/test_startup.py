@@ -15,7 +15,5 @@ class TestStartup:
             raise ValueError("Application should not be required")
 
         startup = Startup()
-        service_provider = startup.configure_services(
-            _predicate, startup.get_settings()
-        )
+        service_provider = startup.configure_services(_predicate, startup.get_settings())
         assert service_provider.logger_configuration().language == "special"

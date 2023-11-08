@@ -36,9 +36,7 @@ class JsonSettingsFile:
         if isinstance(setting_name, dict):
             self.setting_json: dict = setting_name
         else:
-            self.setting_json: dict = json.loads(
-                FileReader.get_resource_file(setting_name, root_path)
-            )
+            self.setting_json: dict = json.loads(FileReader.get_resource_file(setting_name, root_path))
 
     def get(self, key: str, default: Optional[Any] = None) -> Any:
         """Gets value from JSON

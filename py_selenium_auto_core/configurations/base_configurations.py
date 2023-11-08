@@ -17,9 +17,7 @@ class BaseConfiguration(abc.ABC):
         self._node: JsonSettingsFile = JsonSettingsFile(node)
 
     @classmethod
-    def _dict_to_json_settings(
-        cls, settings: dict | JsonSettingsFile
-    ) -> JsonSettingsFile:
+    def _dict_to_json_settings(cls, settings: dict | JsonSettingsFile) -> JsonSettingsFile:
         if isinstance(settings, dict):
             return JsonSettingsFile(settings)
         return settings

@@ -26,9 +26,7 @@ class CoreServices(abc.ABC):
         if service_provider is not None:
             cls._service_provider_container = service_provider()
         elif cls._service_provider_container is None:
-            cls._service_provider_container = Startup.configure_services(
-                application_provider
-            )
+            cls._service_provider_container = Startup.configure_services(application_provider)
         return cls._service_provider_container
 
     @classmethod
@@ -40,9 +38,7 @@ class CoreServices(abc.ABC):
         if not cls._is_application_started():
             cls._app_container = application_provider(
                 cls._get_service_provider(
-                    lambda service: cls._get_application(
-                        application_provider, service_provider
-                    ),
+                    lambda service: cls._get_application(application_provider, service_provider),
                     service_provider,
                 )
             )

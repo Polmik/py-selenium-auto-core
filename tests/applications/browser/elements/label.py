@@ -4,7 +4,6 @@ from py_selenium_auto_core.locator.locator import Locator
 
 
 class Label(WebElement):
-
     def __init__(self, locator: Locator, name: str, element_state: ElementState):
         super().__init__(locator, name, element_state)
 

@@ -57,9 +57,7 @@ class ElementFinder:
             desired_state = DesiredState(state, state_name)
             desired_state.is_catching_timeout_exception = False
             desired_state.is_throwing_no_such_element_exception = True
-            return self._find_elements(
-                locator=locator, state=desired_state, timeout=timeout, name=name
-            )[0]
+            return self._find_elements(locator=locator, state=desired_state, timeout=timeout, name=name)[0]
 
         raise ValueError("Incorrect type of state")
 
@@ -108,25 +106,17 @@ class ElementFinder:
 
         else:
             raise ValueError(f"{state} state is not recognized")
-        return DesiredState(
-            function_condition=element_state_condition, state_name=state.name
-        )
+        return DesiredState(function_condition=element_state_condition, state_name=state.name)
 
-    def _find_elements(
-        self, locator: Locator, state: DesiredState, timeout, name
-    ) -> List[WebElement]:
+    def _find_elements(self, locator: Locator, state: DesiredState, timeout, name) -> List[WebElement]:
         found_elements: List[WebElement] = []
         result_elements: List[WebElement] = []
 
         try:
 
             def predicate(driver: WebDriver) -> bool:
-                found_elements.extend(
-                    driver.find_elements(by=locator.by, value=locator.value)
-                )
-                result_elements.extend(
-                    [el for el in found_elements if state.element_state_condition(el)]
-                )
+                found_elements.extend(driver.find_elements(by=locator.by, value=locator.value))
+                result_elements.extend([el for el in found_elements if state.element_state_condition(el)])
                 return any(result_elements)
 
             self.__conditional_wait.wait_for_driver(predicate, timeout)

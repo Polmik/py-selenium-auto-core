@@ -67,9 +67,7 @@ class ConditionalWait:
             ignored_exceptions=ignore_exceptions,
         )
 
-        result = wait.until(
-            function, self.__get_timeout_exception_message(wait_timeout, message)
-        )
+        result = wait.until(function, self.__get_timeout_exception_message(wait_timeout, message))
         application.set_implicit_wait_timeout(self.__timeout_configuration.implicit)
         return result
 
@@ -136,24 +134,18 @@ class ConditionalWait:
             if self._is_condition_satisfied(function, exceptions_to_ignore or []):
                 return
             if time.time() - start_time > wait_timeout:
-                raise TimeoutException(
-                    self.__get_timeout_exception_message(wait_timeout, message)
-                )
+                raise TimeoutException(self.__get_timeout_exception_message(wait_timeout, message))
             sleep(check_interval)
 
     @staticmethod
-    def __get_timeout_exception_message(
-        wait_timeout: float, message: str = None
-    ) -> str:
+    def __get_timeout_exception_message(wait_timeout: float, message: str = None) -> str:
         exception_message = f"Timed out after {wait_timeout} seconds"
         if message is not None:
             exception_message += f": {message}"
         return exception_message
 
     @staticmethod
-    def _is_condition_satisfied(
-        function: Callable[[], bool], exceptions_to_ignore: List
-    ) -> bool:
+    def _is_condition_satisfied(function: Callable[[], bool], exceptions_to_ignore: List) -> bool:
         try:
             return function()
         except Exception as ex:
@@ -165,14 +157,8 @@ class ConditionalWait:
         return self.__timeout_configuration.condition if timeout is None else timeout
 
     def _resolve_polling_interval(self, polling_interval: float) -> float:
-        return (
-            self.__timeout_configuration.polling_interval
-            if polling_interval is None
-            else polling_interval
-        )
+        return self.__timeout_configuration.polling_interval if polling_interval is None else polling_interval
 
     @staticmethod
     def _is_ignored_exception(ex: Exception, exceptions_to_ignore: List) -> bool:
-        return any(
-            map(lambda ex_to_ignore: isinstance(ex, ex_to_ignore), exceptions_to_ignore)
-        )
+        return any(map(lambda ex_to_ignore: isinstance(ex, ex_to_ignore), exceptions_to_ignore))

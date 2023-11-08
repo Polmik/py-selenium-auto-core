@@ -13,9 +13,7 @@ from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 class TestConditionalWait(TestWithBrowser):
     wiki_url: str = "https://wikipedia.org"
     little_timeout = 1
-    polling_interval = (
-        BrowserServices.Instance.service_provider.timeout_configuration().polling_interval
-    )
+    polling_interval = BrowserServices.Instance.service_provider.timeout_configuration().polling_interval
 
     @pytest.fixture
     def conditional_wait(self) -> ConditionalWait:
@@ -23,12 +21,10 @@ class TestConditionalWait(TestWithBrowser):
 
     @pytest.fixture
     def conditional_wait_for_condition(self, conditional_wait) -> Callable:
-        return (
-            lambda condition, handled_exceptions: conditional_wait.wait_for_condition(
-                condition,
-                timeout=self.little_timeout,
-                exceptions_to_ignore=handled_exceptions,
-            )
+        return lambda condition, handled_exceptions: conditional_wait.wait_for_condition(
+            condition,
+            timeout=self.little_timeout,
+            exceptions_to_ignore=handled_exceptions,
         )
 
     @pytest.fixture
@@ -64,9 +60,7 @@ class TestConditionalWait(TestWithBrowser):
 
         conditional_wait.wait_for_driver(_predicate)
 
-    def test_should_not_throw_on_wait_with_handled_exception(
-        self, wait_with_handled_exception
-    ):
+    def test_should_not_throw_on_wait_with_handled_exception(self, wait_with_handled_exception):
         index = [0]
         ex = AssertionError("Failure during conditional wait in handled exception")
 
@@ -78,9 +72,7 @@ class TestConditionalWait(TestWithBrowser):
 
         wait_with_handled_exception(predicate, [AssertionError])
 
-    def test_should_throw_on_wait_with_unhandled_exception(
-        self, wait_with_handled_exception
-    ):
+    def test_should_throw_on_wait_with_unhandled_exception(self, wait_with_handled_exception):
         index = [0]
         ex = AssertionError("Failure during conditional wait in handled exception")
 
@@ -95,20 +87,11 @@ class TestConditionalWait(TestWithBrowser):
         except AssertionError:
             return
 
-    def test_possible_to_use_conditional_wait_with_element_finder(
-        self, conditional_wait
-    ):
+    def test_possible_to_use_conditional_wait_with_element_finder(self, conditional_wait):
         locator = Locator(By.XPATH, "//*[contains(., 'wikipedia')]")
 
         def element_finder_condition() -> bool:
-            return (
-                len(
-                    self.service_provider.element_finder().find_elements(
-                        locator, timeout=self.little_timeout
-                    )
-                )
-                > 0
-            )
+            return len(self.service_provider.element_finder().find_elements(locator, timeout=self.little_timeout)) > 0
 
         def _predicate(driver: WebDriver):
             self.go_to_url(self.wiki_url, driver)
