@@ -1,3 +1,7 @@
+v0.5.1
+* Updated get_service_provider to reuse the created service_provider_container
+* Fixed CoreElement.log_element_action to work with args
+
 v0.5.0
 * Added ElementFactory that provides methods to find child elements
 * Updated CoreElement

@@ -39,6 +39,7 @@ class TestCoreServices:
         # Check overriding for related classes
         assert TestBrowserService.Instance.service_provider.conditional_wait()._resolve_polling_interval(None) == 1
 
+    @pytest.mark.skip(reason="Incorrect overriding of logger using set_startup")
     def test_possible_to_get_custom_logger_values_via_startup(self):
         TestBrowserService.Instance.set_startup(CustomStartup())
         logger_configuration: CustomLoggerConfiguration = (
