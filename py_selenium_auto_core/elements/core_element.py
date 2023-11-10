@@ -251,4 +251,4 @@ class CoreElement(abc.ABC):
         return self.action_retrier.do_with_retry(function)
 
     def log_element_action(self, message_key: str, *args):
-        self.localized_logger.info_element_action(self.element_type, self.name, message_key, args)
+        self.localized_logger.info_element_action(self.element_type, self.name, message_key, *args)
