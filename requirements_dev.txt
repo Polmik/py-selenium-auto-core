@@ -1,0 +1,31 @@
+-r requirements.txt
+
+# formatter
+black
+
+# reorder imports
+isort
+
+# linter
+flake8
+
+# linter plugins
+# for more useful plugins:
+# https://github.com/DmytroLitvinov/awesome-flake8-extensions
+flake8-bugbear
+flake8-builtins
+flake8-commas
+flake8-comprehensions
+flake8-eradicate
+flake8-plugin-utils
+flake8-print
+flake8-pytest-style
+flake8-quotes
+flake8-SQL
+pep8-naming
+
+# type-hints checker
+mypy
+
+# for tests
+# pytest
