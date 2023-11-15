@@ -14,7 +14,7 @@ with _open("requirements.txt") as requirements_file:
     requirements = requirements_file.readlines()
 
 setuptools.setup(name="py-selenium-auto-core",
-                 version="0.5.1",
+                 version="0.5.2",
                  description="Selenium core for Python",
                  long_description=description,
                  long_description_content_type="text/markdown",
@@ -24,6 +24,8 @@ setuptools.setup(name="py-selenium-auto-core",
                  maintainer_email="mrpolmik@hotmail.com",
                  url="https://github.com/Polmik/py-selenium-auto-core",
                  keywords=['testing', 'selenium', 'driver', 'test automation'],
+                 license="Apache",
+                 license_files=('LICENSE',),
                  include_package_data=True,
                  packages=setuptools.find_packages(include=['py_selenium_auto_core*']),
                  install_requires=requirements,
