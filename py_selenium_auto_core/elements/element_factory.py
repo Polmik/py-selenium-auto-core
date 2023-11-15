@@ -1,6 +1,7 @@
-from typing import Type, List, TypeVar
+from typing import Type, List, TypeVar, Dict
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 from py_selenium_auto_core.elements.constants.element_state import ElementState
 from py_selenium_auto_core.elements.constants.elements_count import ElementsCount
@@ -10,68 +11,37 @@ from py_selenium_auto_core.localization.localization_manager import Localization
 from py_selenium_auto_core.locator.locator import Locator
 from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 
-
-def _generate_xpath_locator(locator: Locator, index: int = None) -> Locator:
-    """Generates xpath locator for target element"""
-
-    if locator.by == By.ID:
-        loc = f"//*[@id='{locator.value}']"
-    elif locator.by == By.CLASS_NAME:
-        loc = f"//*[@class='{locator.value}']"
-    elif locator.by == By.NAME:
-        loc = f"//*[@name='{locator.value}']"
-    elif locator.by == By.TAG_NAME:
-        loc = f"//{locator.value}"
-    elif locator.by == By.XPATH:
-        loc = locator.value
-    else:
-        raise ValueError(f"No such expected value: {locator.by}")
-
-    if index is not None:
-        return Locator(By.XPATH, f"({loc})[{index}]")
-    return Locator(By.XPATH, loc)
-
-
-def _generate_child_locator(parent_locator: Locator, child_locator: Locator):
-    """Generates absolute child locator for target element"""
-
-    par_loc = _generate_xpath_locator(parent_locator)
-    if child_locator.by != By.XPATH:
-        ch_loc_t = _generate_xpath_locator(child_locator).value
-    else:
-        if child_locator.value.startswith("./"):
-            ch_loc_t = child_locator.value.split(".")[1]
-        elif child_locator.value.startswith("/"):
-            ch_loc_t = child_locator.value
-        else:
-            ch_loc_t = f"//child::{child_locator.value}"
-
-    return Locator(By.XPATH, f"{par_loc.value}{ch_loc_t}")
-
-
 T = TypeVar("T", bound=CoreElement, covariant=True)
 
 
 class ElementFactory:
     """Factory that creates elements"""
 
+    _supported_locators: Dict[By, 'str'] = {
+        By.ID: "//*[@id='{0}']",
+        By.CLASS_NAME: "//*[contains(@class,'{0}')]",
+        By.NAME: "//*[@name='{0}']",
+        By.TAG_NAME: "//{0}",
+        By.XPATH: "{0}",
+    }
+
     def __init__(
-        self,
-        conditional_wait: ConditionalWait,
-        element_finder: ElementFinder,
-        localization_manager: LocalizationManager,
+            self,
+            conditional_wait: ConditionalWait,
+            element_finder: ElementFinder,
+            localization_manager: LocalizationManager,
     ):
         self._conditional_wait = conditional_wait
         self._element_finder = element_finder
         self._localization_manager = localization_manager
 
-    @staticmethod
     def find_child_element(
-        element_type: Type[T],
-        parent_element: T,
-        child_locator: Locator,
-        name: str = None,
-        state: ElementState = ElementState.Displayed,
+            self,
+            element_type: Type[T],
+            parent_element: T,
+            child_locator: Locator,
+            name: str = None,
+            state: ElementState = ElementState.Displayed,
     ):
         """Finds child element by its locator relative to parent element
 
@@ -92,19 +62,19 @@ class ElementFactory:
             Instance of child element
         """
         return element_type(
-            _generate_child_locator(parent_element.locator, child_locator),
+            self._generate_child_locator(parent_element.locator, child_locator),
             name or f"Child element of {parent_element.name}",
             state,
         )
 
     def find_child_elements(
-        self,
-        element_type: Type[T],
-        parent_element: T,
-        child_locator: Locator,
-        name: str = None,
-        expected_count: ElementsCount = ElementsCount.Any,
-        state: ElementState = ElementState.Displayed,
+            self,
+            element_type: Type[T],
+            parent_element: T,
+            child_locator: Locator,
+            name: str = None,
+            expected_count: ElementsCount = ElementsCount.Any,
+            state: ElementState = ElementState.Displayed,
     ) -> List[T]:
         """Finds list of child elements by their locator relative to parent element
 
@@ -127,19 +97,19 @@ class ElementFactory:
         """
         return self.find_elements(
             element_type,
-            _generate_child_locator(parent_element.locator, child_locator),
+            self._generate_child_locator(parent_element.locator, child_locator),
             name or f"Child element of {parent_element.name}",
             expected_count,
             state,
         )
 
     def find_elements(
-        self,
-        element_type: Type[T],
-        locator: Locator,
-        name: str = None,
-        expected_count: ElementsCount = ElementsCount.Any,
-        state: ElementState = ElementState.Displayed,
+            self,
+            element_type: Type[T],
+            locator: Locator,
+            name: str = None,
+            expected_count: ElementsCount = ElementsCount.Any,
+            state: ElementState = ElementState.Displayed,
     ) -> List[T]:
         """Finds list of elements by base locator
 
@@ -184,15 +154,18 @@ class ElementFactory:
         elements = []
         name = "element" if name is None else name
         for index, web_element in enumerate(web_elements, 1):
-            elements.append(element_type(_generate_xpath_locator(locator, index), f"{name} + {index}", state))
+            elements.append(
+                element_type(self._generate_xpath_locator(locator, web_element, index), f"{name} + {index}", state)
+            )
         return elements
 
-    @staticmethod
+    @classmethod
     def get_custom_element(
-        element_type: Type[T],
-        locator: Locator,
-        name: str = None,
-        state: ElementState = ElementState.Displayed,
+            cls,
+            element_type: Type[T],
+            locator: Locator,
+            name: str = None,
+            state: ElementState = ElementState.Displayed,
     ):
         """Create custom element according to passed parameters
 
@@ -206,3 +179,34 @@ class ElementFactory:
             Instance of custom element
         """
         return element_type(locator, name, state)
+
+    def _is_locator_supported(self, locator: Locator) -> bool:
+        return locator.by in self._supported_locators
+
+    def _generate_xpath_locator(self, locator: Locator, web_element: WebElement = None, index: int = None) -> Locator:
+        """Generates xpath locator for target element"""
+
+        if not self._is_locator_supported(locator):
+            raise ValueError(f"Locator '{locator.by}' is not supported to generate XPath")
+
+        loc = self._supported_locators[locator.by].format(locator.value)
+
+        if index is not None:
+            return Locator(By.XPATH, f"({loc})[{index}]")
+        return Locator(By.XPATH, loc)
+
+    def _generate_child_locator(self, parent_locator: Locator, child_locator: Locator):
+        """Generates absolute child locator for target element"""
+
+        par_loc = self._generate_xpath_locator(parent_locator)
+        if child_locator.by != By.XPATH:
+            ch_loc_t = self._generate_xpath_locator(child_locator).value
+        else:
+            if child_locator.value.startswith("./"):
+                ch_loc_t = child_locator.value.split(".")[1]
+            elif child_locator.value.startswith("/"):
+                ch_loc_t = child_locator.value
+            else:
+                ch_loc_t = f"//child::{child_locator.value}"
+
+        return Locator(By.XPATH, f"{par_loc.value}{ch_loc_t}")

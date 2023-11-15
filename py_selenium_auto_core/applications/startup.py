@@ -67,8 +67,9 @@ T = TypeVar("T", bound='ServiceProvider', covariant=True)
 
 
 class Startup:
-    @staticmethod
+    @classmethod
     def configure_services(
+        cls,
         application_provider: Callable,
         settings: Optional[JsonSettingsFile] = None,
         service_provider: Optional[T] = None,
@@ -91,15 +92,15 @@ class Startup:
             Configured ServiceProvider
         """
         service_provider: T = service_provider or ServiceProvider()
-        settings = settings or Startup.get_settings()
+        settings = settings or cls.get_settings()
 
         service_provider.settings_file.override(Singleton(lambda: settings))
         service_provider.application.override(Factory(application_provider))
 
         return service_provider
 
-    @staticmethod
-    def get_settings() -> JsonSettingsFile:
+    @classmethod
+    def get_settings(cls) -> JsonSettingsFile:
         """Provides a JsonSettingsFile with settings. Value is set in configure_services
         Otherwise, will use default JSON settings file with name: "settings.{profile}.json".
         Default settings will look for the resource file in resource file (FileReader);
