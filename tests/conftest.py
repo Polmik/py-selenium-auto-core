@@ -11,9 +11,9 @@ from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
 @pytest.fixture(scope="session", autouse=True)
 def setup_session(request):
     # TODO: workaround to set calling root path, because pytest runs from the root dir
-    calling_root_path = RootPathHelper.current_root_path(str(Path(__file__).parent))
-    os.environ["calling_root_path"] = calling_root_path
-    Logger.info(f"Setting calling_root_path: {calling_root_path}")
+    work_dir = RootPathHelper.current_root_path(__file__)
+    os.chdir(work_dir)
+    Logger.info(f'Setting work_dir: {work_dir}')
 
     for log_name in [
         "selenium.webdriver.remote.remote_connection",
