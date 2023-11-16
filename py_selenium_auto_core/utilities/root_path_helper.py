@@ -23,9 +23,6 @@ class RootPathHelper:
         Returns:
             Root path for the file calling the code
         """
-        # TODO: workaround to get calling root path, because pytest runs from the root dir
-        if os.environ.get("calling_root_path"):
-            return os.environ.get("calling_root_path")
         return RootPathHelper._find_root_path(os.getcwd())
 
     @staticmethod
