@@ -14,7 +14,7 @@ with _open("requirements.txt") as requirements_file:
     requirements = requirements_file.readlines()
 
 setuptools.setup(name="py-selenium-auto-core",
-                 version="0.5.2",
+                 version="0.5.3",
                  description="Selenium core for Python",
                  long_description=description,
                  long_description_content_type="text/markdown",
