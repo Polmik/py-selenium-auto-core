@@ -37,7 +37,17 @@ class FileReader:
         if FileReader.is_resource_file_exist(file_name, root_path):
             with open(file_path, "r", encoding="utf-8") as file:
                 return file.read()
-        raise FileExistsError(f"There are not existing files by path '{file_path}'")
+        message = f"""There are not existing files by path '{file_path}'
+        
+        Perhaps the tests were run from the root directory, which caused difficulties in finding the necessary files. 
+            To solve the problem, try adding work_dir from the test package to the setup_session fixture
+        
+        @pytest.fixture(scope="session", autouse=True)
+        def setup_session(request):
+            work_dir = RootPathHelper.current_root_path(__file__)
+            os.chdir(work_dir)
+        """
+        raise FileExistsError(message)
 
     @staticmethod
     def __get_resource_file_path(file_name: str, root_path: str) -> str:

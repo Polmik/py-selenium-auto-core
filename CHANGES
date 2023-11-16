@@ -1,3 +1,7 @@
+v0.5.3
+* Added generics to CoreServices (TypeHinting)
+* Changed workaround to use os.chdir(work_dir) instead of os.environ["calling_root_path"] = calling_root_path
+
 v0.5.2
 * Updated ElementFactory:
     Moved static methods to class

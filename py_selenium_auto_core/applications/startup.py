@@ -100,7 +100,7 @@ class Startup:
         return service_provider
 
     @classmethod
-    def get_settings(cls) -> JsonSettingsFile:
+    def get_settings(cls, calling_root_path: str = None, executing_root_path: str = None) -> JsonSettingsFile:
         """Provides a JsonSettingsFile with settings. Value is set in configure_services
         Otherwise, will use default JSON settings file with name: "settings.{profile}.json".
         Default settings will look for the resource file in resource file (FileReader);
@@ -109,15 +109,12 @@ class Startup:
         Returns:
             An instance of settings
         """
+        executing_root_path = executing_root_path or RootPathHelper.executing_root_path()
+        calling_root_path = calling_root_path or RootPathHelper.calling_root_path()
         profile_name = EnvironmentConfiguration.get_variable("profile")
         settings_profile = "settings.json" if not profile_name else f"settings.{profile_name}.json"
         Logger.debug(f"Get settings from: {settings_profile}")
-        if FileReader.is_resource_file_exist(settings_profile, root_path=RootPathHelper.calling_root_path()):
-            return JsonSettingsFile(
-                setting_name=settings_profile,
-                root_path=RootPathHelper.calling_root_path(),
-            )
-        return JsonSettingsFile(
-            setting_name=settings_profile,
-            root_path=RootPathHelper.executing_root_path(),
-        )
+
+        if FileReader.is_resource_file_exist(settings_profile, root_path=calling_root_path):
+            return JsonSettingsFile(setting_name=settings_profile, root_path=calling_root_path)
+        return JsonSettingsFile(setting_name=settings_profile, root_path=executing_root_path)

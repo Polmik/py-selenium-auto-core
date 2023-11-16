@@ -68,7 +68,7 @@ class TestLocalizationManager(TestWithoutApplication):
         "loc.form.dump.compare.result",
     ]
 
-    def test_possible_to_use_localization_manager_for_clicking_custom_config(self):
+    def test_use_localization_manager_for_clicking_custom_config(self):
         os.environ["profile"] = "custom"
         self.setup_method()
         os.environ["profile"] = ""
@@ -76,12 +76,12 @@ class TestLocalizationManager(TestWithoutApplication):
             self.clicking_key
         )
 
-    def test_possible_to_use_localization_manager_for_clicking(self):
+    def test_use_localization_manager_for_clicking(self):
         assert self.clicking_value_en == self.service_provider.localization_manager().get_localized_message(
             self.clicking_key
         )
 
-    def test_possible_to_use_localization_manager_for_unknown(self):
+    def test_use_localization_manager_for_unknown(self):
         unknown_key = "loc.unknown.fake.key"
         assert unknown_key == self.service_provider.localization_manager().get_localized_message(unknown_key)
 

@@ -23,7 +23,7 @@ class TestCustomConfiguration:
         )
 
     @pytest.mark.skip(reason="Incorrect working with custom settings")
-    def test_possible_to_get_retry_config(self):
+    def test_get_retry_config(self):
         retry_config = self.service_provider.retry_configuration()
         timeout_config = self.service_provider.timeout_configuration()
         logger_config = self.service_provider.logger_configuration()
