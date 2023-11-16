@@ -24,13 +24,13 @@ def reset_override(request):
 
 
 class TestCoreServices:
-    def test_possible_to_register_custom_services_via_startup(self):
+    def test_register_custom_services_via_startup(self):
         assert isinstance(
             TestBrowserService.Instance.service_provider.timeout_configuration(),
             TestTimeoutConfiguration,
         )
 
-    def test_possible_to_get_custom_values_via_startup(self):
+    def test_get_custom_values_via_startup(self):
         timeout_configuration: TestTimeoutConfiguration = (
             TestBrowserService.Instance.service_provider.timeout_configuration()
         )
@@ -40,14 +40,14 @@ class TestCoreServices:
         assert TestBrowserService.Instance.service_provider.conditional_wait()._resolve_polling_interval(None) == 1
 
     @pytest.mark.skip(reason="Incorrect overriding of logger using set_startup")
-    def test_possible_to_get_custom_logger_values_via_startup(self):
+    def test_get_custom_logger_values_via_startup(self):
         TestBrowserService.Instance.set_startup(CustomStartup())
         logger_configuration: CustomLoggerConfiguration = (
             TestBrowserService.Instance.service_provider.logger_configuration()
         )
         assert logger_configuration.custom_logger == "CustomLogger"
 
-    def test_possible_to_register_custom_services_via_startup_with_custom_settings_file(
+    def test_register_custom_services_via_startup_with_custom_settings_file(
         self,
     ):
         assert "special" == TestBrowserService.Instance.service_provider.logger_configuration().language

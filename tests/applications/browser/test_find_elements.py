@@ -80,7 +80,7 @@ class BaseTestFindElements(TestWithBrowser):
             pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 3),
         ),
     )
-    def test_possible_to_find_elements_for_displayed_elements(
+    def test_find_elements_for_displayed_elements(
         self,
         count: ElementsCount,
         state: ElementState,
@@ -98,7 +98,7 @@ class BaseTestFindElements(TestWithBrowser):
             pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 3),
         ),
     )
-    def test_possible_to_find_elements_for_hidden_elements(
+    def test_find_elements_for_hidden_elements(
         self,
         count: ElementsCount,
         state: ElementState,
@@ -116,7 +116,7 @@ class BaseTestFindElements(TestWithBrowser):
             pytest.param(ElementsCount.Any, ElementState.ExistsInAnyState, 0),
         ),
     )
-    def test_possible_to_find_elements_for_not_exists_elements(
+    def test_find_elements_for_not_exists_elements(
         self,
         count: ElementsCount,
         state: ElementState,
@@ -186,7 +186,7 @@ class BaseTestFindElements(TestWithBrowser):
             is_error = True
         assert is_error, f"Tried to find elements with expected count '{count}' and state '{state}'"
 
-    def test_possible_to_work_with_elements_found_by_dotted_locator(self):
+    def test_work_with_elements_found_by_dotted_locator(self):
         found_elements = self.find_elements(Label, self.dotted_loc, expected_count=ElementsCount.MoreThenZero)
         [e.get_element() for e in found_elements]
 

@@ -53,7 +53,7 @@ class TestConditionalWait(TestWithBrowser):
     def wait_with_handled_exception(self, request):
         return request.getfixturevalue(request.param)
 
-    def test_possible_to_use_condition_with_driver(self, conditional_wait):
+    def test_use_condition_with_driver(self, conditional_wait):
         def _predicate(driver: WebDriver):
             self.go_to_url(self.wiki_url, driver)
             return len(driver.find_elements(By.XPATH, "//*")) > 0
@@ -87,7 +87,7 @@ class TestConditionalWait(TestWithBrowser):
         except AssertionError:
             return
 
-    def test_possible_to_use_conditional_wait_with_element_finder(self, conditional_wait):
+    def test_use_conditional_wait_with_element_finder(self, conditional_wait):
         locator = Locator(By.XPATH, "//*[contains(., 'wikipedia')]")
 
         def element_finder_condition() -> bool:
