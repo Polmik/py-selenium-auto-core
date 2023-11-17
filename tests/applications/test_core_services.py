@@ -85,14 +85,15 @@ class TestCoreServices:
 
 
 class TestStartup(Startup):
-    @staticmethod
+    @classmethod
     def configure_services(
+        cls,
         application_provider: Callable,
         settings: Optional[JsonSettingsFile] = None,
         service_provider: Optional[ServiceProvider] = None,
     ) -> ServiceProvider:
         settings = JsonSettingsFile("settings.special.json", RootPathHelper.calling_root_path())
-        service_provider = Startup.configure_services(application_provider, settings)
+        service_provider = super().configure_services(application_provider, settings)
         service_provider.timeout_configuration.override(
             Singleton(TestTimeoutConfiguration, service_provider.settings_file)
         )
@@ -180,8 +181,9 @@ class CustomServiceProvider(ServiceProvider):
 
 
 class CustomSPStartup(Startup):
-    @staticmethod
+    @classmethod
     def configure_services(
+        cls,
         application_provider: Callable,
         settings: Optional[JsonSettingsFile] = None,
         service_provider: Optional[ServiceProvider] = None,
@@ -189,15 +191,16 @@ class CustomSPStartup(Startup):
         ServiceProvider.override(CustomServiceProvider)
 
         settings = JsonSettingsFile("settings.special.json", RootPathHelper.calling_root_path())
-        service_provider = Startup.configure_services(application_provider, settings, CustomServiceProvider())
+        service_provider = super().configure_services(application_provider, settings, CustomServiceProvider())
 
         ServiceProvider.reset_override()
         return service_provider
 
-    @staticmethod
+    @classmethod
     def configure_services_without_override(
+        cls,
         application_provider: Callable,
     ) -> CustomServiceProvider:
         settings = JsonSettingsFile("settings.special.json", RootPathHelper.calling_root_path())
-        service_provider = Startup.configure_services(application_provider, settings, CustomServiceProvider())
+        service_provider = super().configure_services(application_provider, settings, CustomServiceProvider())
         return service_provider

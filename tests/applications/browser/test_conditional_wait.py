@@ -60,7 +60,7 @@ class TestConditionalWait(TestWithBrowser):
 
         conditional_wait.wait_for_driver(_predicate)
 
-    def test_should_not_throw_on_wait_with_handled_exception(self, wait_with_handled_exception):
+    def test_not_throw_on_wait_with_handled_exception(self, wait_with_handled_exception):
         index = [0]
         ex = AssertionError("Failure during conditional wait in handled exception")
 
@@ -72,7 +72,7 @@ class TestConditionalWait(TestWithBrowser):
 
         wait_with_handled_exception(predicate, [AssertionError])
 
-    def test_should_throw_on_wait_with_unhandled_exception(self, wait_with_handled_exception):
+    def test_throw_on_wait_with_unhandled_exception(self, wait_with_handled_exception):
         index = [0]
         ex = AssertionError("Failure during conditional wait in handled exception")
 

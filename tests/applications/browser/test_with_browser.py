@@ -14,11 +14,11 @@ class TestWithBrowser:
 
     service_provider: ServiceProvider = None
 
-    def setup_method(self, method):
+    def setup_method(self):
         self.service_provider = CustomStartup.configure_services(lambda: BrowserServices.Instance.application)
         BrowserServices.Instance.service_provider = self.service_provider
 
-    def teardown_method(self, method):
+    def teardown_method(self):
         if BrowserServices.Instance.is_application_started():
             BrowserServices.Instance.application.quit()
 
@@ -34,11 +34,12 @@ class TestWithBrowser:
 
 
 class CustomStartup(Startup):
-    @staticmethod
+    @classmethod
     def configure_services(
+        cls,
         application_provider: Callable,
         settings: Optional[JsonSettingsFile] = None,
         service_provider: Optional[ServiceProvider] = None,
     ) -> ServiceProvider:
-        service_provider = Startup.configure_services(application_provider, settings)
+        service_provider = super().configure_services(application_provider, settings)
         return service_provider

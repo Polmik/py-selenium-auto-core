@@ -22,7 +22,7 @@ class TestRetrier:
     def polling_interval(self) -> float:
         return self.retry_configuration.polling_interval * 1000
 
-    def setup_method(self, method):
+    def setup_method(self):
         Startup.configure_services(lambda: BrowserServices.Instance.application)
 
     def retrier_should_work_once(self, function: Callable):
