@@ -49,5 +49,5 @@ class CoreServices(abc.ABC):
         return cls._app_container
 
     @classmethod
-    def _set_application(cls, application: Application):
+    def _set_application(cls, application: TApp):
         cls._app_container = application
