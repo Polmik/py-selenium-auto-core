@@ -1,9 +1,9 @@
-import time
 from typing import Callable
 
 from py_selenium_auto_core.applications.startup import Startup
 from py_selenium_auto_core.configurations.retry_configuration import RetryConfiguration
 from py_selenium_auto_core.logging.logger import Logger
+from py_selenium_auto_core.utilities.functional import Timer
 from tests.applications.browser.browser_services import BrowserServices
 
 
@@ -20,23 +20,23 @@ class TestRetrier:
 
     @property
     def polling_interval(self) -> float:
-        return self.retry_configuration.polling_interval * 1000
+        return self.retry_configuration.polling_interval
 
     def setup_method(self):
         Startup.configure_services(lambda: BrowserServices.Instance.application)
 
     def retrier_should_work_once(self, function: Callable):
-        start_time = time.time()
-        function()
-        duration = time.time() - start_time
+        with Timer() as timer:
+            function()
+        duration = timer.elapsed.total_seconds()
         assert (
             duration < self.polling_interval
         ), f"Duration '{duration}' should be less that pollingInterval '{self.polling_interval}'"
 
     def retrier_should_wait_polling_interval(self, function: Callable):
-        start_time = time.time()
-        function()
-        duration = (time.time() - start_time) * 1000
+        with Timer() as timer:
+            function()
+        duration = timer.elapsed.total_seconds()
         doubled_accuracy_polling_interval = self.polling_interval * 2 + self.accuracy
         assert self.polling_interval <= duration <= doubled_accuracy_polling_interval, (
             f"Duration '{duration}' should be more than '{self.polling_interval}' "
