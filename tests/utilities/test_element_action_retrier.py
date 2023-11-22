@@ -1,7 +1,7 @@
 import pytest
 from selenium.common import InvalidElementStateException, StaleElementReferenceException
 
-from py_selenium_auto_core.utilities.element_action_retrier import ElementActionRetrier
+from py_selenium_auto_core.utilities.action_retrier import ElementActionRetrier
 from tests.applications.browser.browser_services import BrowserServices
 from tests.utilities.test_retrier import TestRetrier
 

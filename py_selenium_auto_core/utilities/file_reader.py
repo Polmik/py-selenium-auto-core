@@ -1,6 +1,5 @@
 import os
 from typing import Optional
-
 from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
 
 
@@ -20,7 +19,7 @@ class FileReader:
         Returns:
             True if exists and false otherwise
         """
-        return os.path.exists(FileReader.__get_resource_file_path(file_name, root_path))
+        return os.path.exists(FileReader.get_resource_file_path(file_name, root_path))
 
     @staticmethod
     def get_resource_file(file_name: str, root_path: Optional[str] = None) -> str:
@@ -32,8 +31,10 @@ class FileReader:
 
         Returns:
             Text of the file
+
+        'get_resource_file' is deprecated. Use 'property' with 'abstractmethod' instead.
         """
-        file_path = FileReader.__get_resource_file_path(file_name, root_path)
+        file_path = FileReader.get_resource_file_path(file_name, root_path)
         if FileReader.is_resource_file_exist(file_name, root_path):
             with open(file_path, "r", encoding="utf-8") as file:
                 return file.read()
@@ -50,6 +51,6 @@ class FileReader:
         raise FileExistsError(message)
 
     @staticmethod
-    def __get_resource_file_path(file_name: str, root_path: str) -> str:
-        root_path = root_path or RootPathHelper.executing_root_path()
+    def get_resource_file_path(file_name: str, root_path: str) -> str:
+        root_path = root_path or RootPathHelper.current_root_path(__file__)
         return os.path.join(root_path, FileReader.__resource_folder, file_name)
