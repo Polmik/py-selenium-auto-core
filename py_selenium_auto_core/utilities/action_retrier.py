@@ -1,5 +1,7 @@
 from time import sleep
-from typing import Any, Callable
+from typing import Any, Callable, Optional
+
+from selenium.common import StaleElementReferenceException, InvalidElementStateException
 
 from py_selenium_auto_core.configurations.retry_configuration import RetryConfiguration
 
@@ -48,3 +50,24 @@ class ActionRetrier:
     @staticmethod
     def _is_ignored_exception(ex: Exception, exceptions_to_ignore: list) -> bool:
         return any(map(lambda exti: isinstance(ex, exti), exceptions_to_ignore))
+
+
+class ElementActionRetrier(ActionRetrier):
+    """This class is used for do some action with retry when HandledExceptions occures"""
+
+    def __init__(self, retry_configuration: RetryConfiguration):
+        """RetryConfiguration constructor
+
+        Args:
+            retry_configuration (RetryConfiguration): Retry configurations
+        """
+        super().__init__(retry_configuration)
+
+        """Exceptions to be ignored during action retrying"""
+        self.handled_exceptions = [
+            StaleElementReferenceException,
+            InvalidElementStateException,
+        ]
+
+    def do_with_retry(self, function: Callable, handled_exceptions: Optional[list] = None) -> Any:
+        return super().do_with_retry(function, handled_exceptions or self.handled_exceptions)
