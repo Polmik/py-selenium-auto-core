@@ -7,8 +7,8 @@ from tests.applications.browser.test_with_browser import TestWithBrowser
 class TestApplicationNotStarted(TestWithBrowser):
     service_provider_attrs = None
 
-    def setup_method(self, method):
-        super().setup_method(method)
+    def setup_method(self):
+        super().setup_method()
         self.service_provider_attrs = self.service_provider.__dict__.get("providers")
 
     @pytest.mark.parametrize(
@@ -27,7 +27,7 @@ class TestApplicationNotStarted(TestWithBrowser):
             "element_finder",
         ],
     )
-    def test_should_not_start_application(self, service):
+    def test_not_start_application(self, service):
         service_attr = self.service_provider.__getattribute__(service)
         assert service_attr is not None
         assert service_attr() is not None

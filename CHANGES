@@ -1,3 +1,12 @@
+v0.5.4
+* Added CoreForm
+* Added Timer in functional
+* Moved ElementActionRetrier to action_retrier.py
+* Removed executing_root_path
+* Added another way to create locator
+    Locator.by_name("Name") == Locator(By.NAME, "Name")
+    Locator.by_xpath("XPATH") == Locator(By.XPATH, "XPATH")
+
 v0.5.3
 * Added generics to CoreServices (TypeHinting)
 * Changed workaround to use os.chdir(work_dir) instead of os.environ["calling_root_path"] = calling_root_path

@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.7, 3.8, 3.9 ]
+        python-version: [ 3.7, 3.8 ]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -63,7 +63,7 @@ jobs:
         pytest
 
   test-coverage:
-    name: Run tests with coverage
+    name: Run tests with coverage [py3.9]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

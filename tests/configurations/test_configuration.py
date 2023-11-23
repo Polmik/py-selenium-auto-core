@@ -11,5 +11,5 @@ class TestConfiguration(TestWithoutApplication):
     def teardown_method(self, method):
         os.environ["profile"] = ""
 
-    def test_should_get_configuration_from_custom_profile(self):
+    def test_get_configuration_from_custom_profile(self):
         assert "ru" == self.service_provider.logger_configuration().language

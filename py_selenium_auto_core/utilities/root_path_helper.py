@@ -8,15 +8,6 @@ class RootPathHelper:
     init_filename = "__init__.py"
 
     @staticmethod
-    def executing_root_path():
-        """Gets the root path for the package executing the code
-
-        Returns:
-            Root path for the file executing the code
-        """
-        return RootPathHelper._find_root_path(str(Path(__file__).parent))
-
-    @staticmethod
     def calling_root_path():
         """Gets the root path for the package calling the code
 

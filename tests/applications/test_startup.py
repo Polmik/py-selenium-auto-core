@@ -4,13 +4,13 @@ from py_selenium_auto_core.applications.startup import Startup
 
 
 class TestStartup:
-    def setup_method(self, method):
+    def setup_method(self):
         os.environ["profile"] = "special"
 
-    def teardown_method(self, method):
+    def teardown_method(self):
         os.environ["profile"] = ""
 
-    def test_should_get_configuration_from_custom_profile(self):
+    def test_get_configuration_from_custom_profile(self):
         def _predicate(service):
             raise ValueError("Application should not be required")
 

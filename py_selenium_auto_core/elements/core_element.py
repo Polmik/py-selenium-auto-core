@@ -27,7 +27,7 @@ from py_selenium_auto_core.waitings.conditional_wait import ConditionalWait
 if TYPE_CHECKING:
     from py_selenium_auto_core.elements.element_factory import ElementFactory
 
-T = TypeVar("T", bound='CoreElement', covariant=True)
+T = TypeVar("T", bound="CoreElement", covariant=True)
 
 
 class CoreElement(abc.ABC):
@@ -92,7 +92,7 @@ class CoreElement(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def factory(self) -> 'ElementFactory':
+    def factory(self) -> "ElementFactory":
         raise NotImplementedError("Abstract")
 
     @property

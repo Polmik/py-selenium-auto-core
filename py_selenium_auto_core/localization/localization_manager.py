@@ -24,11 +24,11 @@ class LocalizationManager:
         language = logger_configuration.language
         self.__localization_file = self.__get_localization_file(
             language,
-            root_path or RootPathHelper.executing_root_path(),
+            root_path or RootPathHelper.current_root_path(__file__),
         )
         self.__core_localization_file = self.__get_localization_file(
             language,
-            RootPathHelper.executing_root_path(),
+            RootPathHelper.current_root_path(__file__),
         )
         self.logger = logger
 
@@ -46,6 +46,6 @@ class LocalizationManager:
         root_path_to_use = (
             root_path
             if FileReader.is_resource_file_exist(resource_name, root_path)
-            else RootPathHelper.executing_root_path()
+            else RootPathHelper.current_root_path(__file__)
         )
         return json.loads(FileReader.get_resource_file(resource_name, root_path_to_use))

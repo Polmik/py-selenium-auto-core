@@ -66,8 +66,8 @@ class BaseTestFindElements(TestWithBrowser):
     def parent_element(self) -> Label:
         return Label(self.content_loc, "Example", ElementState.ExistsInAnyState)
 
-    def setup_method(self, method):
-        super().setup_method(method)
+    def setup_method(self):
+        super().setup_method()
         self.go_to_url(self.hovers_url)
         self.parent_element.click()
 
@@ -138,19 +138,19 @@ class BaseTestFindElements(TestWithBrowser):
         count: ElementsCount,
         state: ElementState,
     ):
-        is_error = False
         try:
             self.find_elements(Label, self.displayed_elements_loc, expected_count=count, state=state)
         except TimeoutException:
-            is_error = True
-        assert is_error, f"Tried to find elements with expected count '{count}' and state '{state}'"
+            ...
+        else:
+            pytest.fail(f"Tried to find elements with expected count '{count}' and state '{state}'")
 
     @pytest.mark.parametrize(
         argnames=("count", "state"),
-        argvalues=(
+        argvalues=[
             pytest.param(ElementsCount.MoreThenZero, ElementState.Displayed),
             pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState),
-        ),
+        ],
     )
     def test_impossible_to_find_hidden_elements_with_wrong_arguments(
         self, reset_config, count: ElementsCount, state: ElementState

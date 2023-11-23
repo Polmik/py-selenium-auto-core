@@ -1,7 +1,7 @@
 import pytest
 from selenium.common import InvalidElementStateException, StaleElementReferenceException
 
-from py_selenium_auto_core.utilities.element_action_retrier import ElementActionRetrier
+from py_selenium_auto_core.utilities.action_retrier import ElementActionRetrier
 from tests.applications.browser.browser_services import BrowserServices
 from tests.utilities.test_retrier import TestRetrier
 
@@ -11,7 +11,7 @@ class TestElementActionRetrier(TestRetrier):
         params=[
             InvalidElementStateException,
             StaleElementReferenceException,
-        ]
+        ],
     )
     def exception(self, request):
         return request.param
@@ -32,37 +32,37 @@ class TestElementActionRetrier(TestRetrier):
     def test_retrier_should_wait_polling_interval(self, exception):
         throw_exception = [True]
 
-        def predicate():
+        def _predicate():
             if throw_exception[0]:
                 throw_exception[0] = False
                 raise exception
 
-        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(predicate))
+        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(_predicate))
 
     def test_retrier_should_wait_polling_interval_with_return(self, exception):
         throw_exception = [True]
 
-        def predicate():
+        def _predicate():
             if throw_exception[0]:
                 throw_exception[0] = False
                 raise exception
             return True
 
-        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(predicate))
+        self.retrier_should_wait_polling_interval(lambda: self.element_action_retrier.do_with_retry(_predicate))
 
     def test_retrier_should_throw__unhandled_exception(self):
-        def predicate():
+        def _predicate():
             raise ValueError
 
         try:
-            self.element_action_retrier.do_with_retry(predicate, [])
+            self.element_action_retrier.do_with_retry(_predicate, [])
         except ValueError:
             pass
 
     def test_retrier_should_work_correct_times(self, exception):
         actual_attempts = [0]
 
-        def predicate():
+        def _predicate():
             self.logger.info(f"current attempt is {actual_attempts[0]}")
             actual_attempts[0] += 1
             raise exception
@@ -70,5 +70,5 @@ class TestElementActionRetrier(TestRetrier):
         self.retrier_should_work_correct_times(
             exception,
             actual_attempts,
-            lambda: self.element_action_retrier.do_with_retry(predicate, [exception]),
+            lambda: self.element_action_retrier.do_with_retry(_predicate, [exception]),
         )

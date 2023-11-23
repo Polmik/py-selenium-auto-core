@@ -22,7 +22,7 @@ from py_selenium_auto_core.localization.localized_logger import LocalizedLogger
 from py_selenium_auto_core.logging.logger import Logger
 from py_selenium_auto_core.utilities.action_retrier import ActionRetrier
 from py_selenium_auto_core.utilities.root_path_helper import RootPathHelper
-from py_selenium_auto_core.utilities.element_action_retrier import ElementActionRetrier
+from py_selenium_auto_core.utilities.action_retrier import ElementActionRetrier
 from py_selenium_auto_core.utilities.environment_configuration import (
     EnvironmentConfiguration,
 )
@@ -63,7 +63,7 @@ class ServiceProvider(containers.DeclarativeContainer):
     )
 
 
-T = TypeVar("T", bound='ServiceProvider', covariant=True)
+_T = TypeVar("_T", bound="ServiceProvider", covariant=True)
 
 
 class Startup:
@@ -72,8 +72,8 @@ class Startup:
         cls,
         application_provider: Callable,
         settings: Optional[JsonSettingsFile] = None,
-        service_provider: Optional[T] = None,
-    ) -> T | ServiceProvider:
+        service_provider: Optional[_T] = None,
+    ) -> _T | ServiceProvider:
         """Method to configure dependencies for services of the current library
 
         Args:
@@ -91,7 +91,7 @@ class Startup:
         Returns:
             Configured ServiceProvider
         """
-        service_provider: T = service_provider or ServiceProvider()
+        service_provider: _T = service_provider or ServiceProvider()
         settings = settings or cls.get_settings()
 
         service_provider.settings_file.override(Singleton(lambda: settings))
@@ -109,7 +109,7 @@ class Startup:
         Returns:
             An instance of settings
         """
-        executing_root_path = executing_root_path or RootPathHelper.executing_root_path()
+        executing_root_path = executing_root_path or RootPathHelper.current_root_path(__file__)
         calling_root_path = calling_root_path or RootPathHelper.calling_root_path()
         profile_name = EnvironmentConfiguration.get_variable("profile")
         settings_profile = "settings.json" if not profile_name else f"settings.{profile_name}.json"

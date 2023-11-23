@@ -1,4 +1,4 @@
--r requirements.txt
+
 
 # formatter
 black
@@ -29,3 +29,5 @@ mypy
 
 # for tests
 # pytest
+
+-r requirements.txt

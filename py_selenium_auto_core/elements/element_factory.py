@@ -17,7 +17,7 @@ T = TypeVar("T", bound=CoreElement, covariant=True)
 class ElementFactory:
     """Factory that creates elements"""
 
-    _supported_locators: Dict[By, 'str'] = {
+    _supported_locators: Dict[By, "str"] = {
         By.ID: "//*[@id='{0}']",
         By.CLASS_NAME: "//*[contains(@class,'{0}')]",
         By.NAME: "//*[@name='{0}']",
@@ -26,22 +26,22 @@ class ElementFactory:
     }
 
     def __init__(
-            self,
-            conditional_wait: ConditionalWait,
-            element_finder: ElementFinder,
-            localization_manager: LocalizationManager,
+        self,
+        conditional_wait: ConditionalWait,
+        element_finder: ElementFinder,
+        localization_manager: LocalizationManager,
     ):
         self._conditional_wait = conditional_wait
         self._element_finder = element_finder
         self._localization_manager = localization_manager
 
     def find_child_element(
-            self,
-            element_type: Type[T],
-            parent_element: T,
-            child_locator: Locator,
-            name: str = None,
-            state: ElementState = ElementState.Displayed,
+        self,
+        element_type: Type[T],
+        parent_element: T,
+        child_locator: Locator,
+        name: str = None,
+        state: ElementState = ElementState.Displayed,
     ):
         """Finds child element by its locator relative to parent element
 
@@ -68,13 +68,13 @@ class ElementFactory:
         )
 
     def find_child_elements(
-            self,
-            element_type: Type[T],
-            parent_element: T,
-            child_locator: Locator,
-            name: str = None,
-            expected_count: ElementsCount = ElementsCount.Any,
-            state: ElementState = ElementState.Displayed,
+        self,
+        element_type: Type[T],
+        parent_element: T,
+        child_locator: Locator,
+        name: str = None,
+        expected_count: ElementsCount = ElementsCount.Any,
+        state: ElementState = ElementState.Displayed,
     ) -> List[T]:
         """Finds list of child elements by their locator relative to parent element
 
@@ -104,12 +104,12 @@ class ElementFactory:
         )
 
     def find_elements(
-            self,
-            element_type: Type[T],
-            locator: Locator,
-            name: str = None,
-            expected_count: ElementsCount = ElementsCount.Any,
-            state: ElementState = ElementState.Displayed,
+        self,
+        element_type: Type[T],
+        locator: Locator,
+        name: str = None,
+        expected_count: ElementsCount = ElementsCount.Any,
+        state: ElementState = ElementState.Displayed,
     ) -> List[T]:
         """Finds list of elements by base locator
 
@@ -161,11 +161,11 @@ class ElementFactory:
 
     @classmethod
     def get_custom_element(
-            cls,
-            element_type: Type[T],
-            locator: Locator,
-            name: str = None,
-            state: ElementState = ElementState.Displayed,
+        cls,
+        element_type: Type[T],
+        locator: Locator,
+        name: str = None,
+        state: ElementState = ElementState.Displayed,
     ):
         """Create custom element according to passed parameters
 
