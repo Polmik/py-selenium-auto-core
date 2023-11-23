@@ -22,41 +22,41 @@ class TestActionRetrier(TestRetrier):
     def test_retrier_should_wait_polling_interval(self):
         throw_exception = [True]
 
-        def predicate():
+        def _predicate():
             if throw_exception[0]:
                 throw_exception[0] = False
                 raise ValueError
 
         self.retrier_should_wait_polling_interval(
-            lambda: self.action_retrier.do_with_retry(predicate, self.handled_exceptions)
+            lambda: self.action_retrier.do_with_retry(_predicate, self.handled_exceptions)
         )
 
     def test_retrier_should_wait_polling_interval_with_return(self):
         throw_exception = [True]
 
-        def predicate():
+        def _predicate():
             if throw_exception[0]:
                 throw_exception[0] = False
                 raise ValueError
             return True
 
         self.retrier_should_wait_polling_interval(
-            lambda: self.action_retrier.do_with_retry(predicate, self.handled_exceptions)
+            lambda: self.action_retrier.do_with_retry(_predicate, self.handled_exceptions)
         )
 
     def test_retrier_should_throw__unhandled_exception(self):
-        def predicate():
+        def _predicate():
             raise ValueError
 
         try:
-            self.action_retrier.do_with_retry(predicate, [])
+            self.action_retrier.do_with_retry(_predicate, [])
         except ValueError:
             pass
 
     def test_retrier_should_work_correct_times(self):
         actual_attempts = [0]
 
-        def predicate():
+        def _predicate():
             self.logger.info(f"current attempt is {actual_attempts[0]}")
             actual_attempts[0] += 1
             raise ValueError
@@ -64,5 +64,5 @@ class TestActionRetrier(TestRetrier):
         self.retrier_should_work_correct_times(
             ValueError,
             actual_attempts,
-            lambda: self.action_retrier.do_with_retry(predicate, self.handled_exceptions),
+            lambda: self.action_retrier.do_with_retry(_predicate, self.handled_exceptions),
         )

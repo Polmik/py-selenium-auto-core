@@ -63,7 +63,7 @@ class ServiceProvider(containers.DeclarativeContainer):
     )
 
 
-T = TypeVar("T", bound='ServiceProvider', covariant=True)
+_T = TypeVar("_T", bound="ServiceProvider", covariant=True)
 
 
 class Startup:
@@ -72,8 +72,8 @@ class Startup:
         cls,
         application_provider: Callable,
         settings: Optional[JsonSettingsFile] = None,
-        service_provider: Optional[T] = None,
-    ) -> T | ServiceProvider:
+        service_provider: Optional[_T] = None,
+    ) -> _T | ServiceProvider:
         """Method to configure dependencies for services of the current library
 
         Args:
@@ -91,7 +91,7 @@ class Startup:
         Returns:
             Configured ServiceProvider
         """
-        service_provider: T = service_provider or ServiceProvider()
+        service_provider: _T = service_provider or ServiceProvider()
         settings = settings or cls.get_settings()
 
         service_provider.settings_file.override(Singleton(lambda: settings))

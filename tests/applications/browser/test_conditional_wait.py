@@ -64,26 +64,26 @@ class TestConditionalWait(TestWithBrowser):
         index = [0]
         ex = AssertionError("Failure during conditional wait in handled exception")
 
-        def predicate():
+        def _predicate():
             index[0] += 1
             if index[0] == 2:
                 return True
             raise ex
 
-        wait_with_handled_exception(predicate, [AssertionError])
+        wait_with_handled_exception(_predicate, [AssertionError])
 
     def test_throw_on_wait_with_unhandled_exception(self, wait_with_handled_exception):
         index = [0]
         ex = AssertionError("Failure during conditional wait in handled exception")
 
-        def predicate():
+        def _predicate():
             index[0] += 1
             if index[0] == 2:
                 return True
             raise ex
 
         try:
-            wait_with_handled_exception(predicate, [NameError])
+            wait_with_handled_exception(_predicate, [NameError])
         except AssertionError:
             return
 

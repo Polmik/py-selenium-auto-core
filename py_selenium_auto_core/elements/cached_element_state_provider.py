@@ -13,7 +13,7 @@ class CachedElementStateProvider:
         element_cache_handler: ElementCacheHandler,
         log_element_state: Callable[[str, str], None],
     ):
-        self.__locator = locator
-        self.__conditional_wait = conditional_wait
-        self.__element_cache_handler = element_cache_handler
-        self.__log_element_state = log_element_state
+        self._locator = locator
+        self._conditional_wait = conditional_wait
+        self._element_cache_handler = element_cache_handler
+        self._log_element_state = log_element_state

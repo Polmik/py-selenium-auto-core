@@ -2,12 +2,11 @@ from datetime import timedelta, datetime
 
 
 class Timer:
-
     @property
     def elapsed(self) -> timedelta:
         return self.end_date - self.start_time
 
-    def __enter__(self) -> 'Timer':
+    def __enter__(self) -> "Timer":
         self.start_time = datetime.now()
         return self
 

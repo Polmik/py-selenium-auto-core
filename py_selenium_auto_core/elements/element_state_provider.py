@@ -21,10 +21,10 @@ class ElementStateProvider:
         element_finder: ElementFinder,
         log_element_state: Callable[[str, str], None],
     ):
-        self.__locator = locator
-        self.__conditional_wait = conditional_wait
-        self.__element_finder = element_finder
-        self.__log_element_state = log_element_state
+        self._locator = locator
+        self._conditional_wait = conditional_wait
+        self._element_finder = element_finder
+        self._log_element_state = log_element_state
 
     def is_displayed(self) -> bool:
         """Gets element's displayed state: true if displayed and false otherwise"""
@@ -72,7 +72,7 @@ class ElementStateProvider:
         """
 
         def _predicate():
-            return self.__conditional_wait.wait_for_condition(lambda: not self.is_displayed(), timeout)
+            return self._conditional_wait.wait_for_condition(lambda: not self.is_displayed(), timeout)
 
         return self.__do_and_log_wait_for_state(_predicate, "not.displayed", timeout)
 
@@ -102,7 +102,7 @@ class ElementStateProvider:
         """
 
         def _predicate():
-            return self.__conditional_wait.wait_for_condition(lambda: not self.is_exist(), timeout)
+            return self._conditional_wait.wait_for_condition(lambda: not self.is_exist(), timeout)
 
         return self.__do_and_log_wait_for_state(_predicate, "not.exist", timeout)
 
@@ -158,10 +158,10 @@ class ElementStateProvider:
         """
         condition_key = "loc.el.state.clickable"
         try:
-            self.__log_element_state("loc.wait.for.state", condition_key)
+            self._log_element_state("loc.wait.for.state", condition_key)
             self.__is_element_clickable(timeout, False)
         except Exception:
-            self.__log_element_state("loc.wait.for.state.failed", condition_key)
+            self._log_element_state("loc.wait.for.state.failed", condition_key)
             raise
 
     def __is_element_clickable(self, timeout: float, catch_exception: bool) -> bool:
@@ -170,10 +170,10 @@ class ElementStateProvider:
         return self.__is_element_in_desired_condition(timeout, desired_state)
 
     def __is_element_in_desired_condition(self, timeout: float, element_state: DesiredState) -> bool:
-        return any(self.__element_finder.find_elements(self.__locator, element_state, timeout))
+        return any(self._element_finder.find_elements(self._locator, element_state, timeout))
 
     def __is_any_element_found(self, timeout: float, state: ElementState) -> bool:
-        return any(self.__element_finder.find_elements(self.__locator, state, timeout))
+        return any(self._element_finder.find_elements(self._locator, state, timeout))
 
     def __is_element_enabled(self, element: WebElement) -> bool:
         return element.is_enabled() and "disabled" not in element.get_attribute("class")
@@ -189,8 +189,8 @@ class ElementStateProvider:
             return function()
 
         condition_key = f"loc.el.state.{msg_key}"
-        self.__log_element_state("loc.wait.for.state", condition_key)
-        result = self.__conditional_wait.wait_for_condition(function, timeout)
+        self._log_element_state("loc.wait.for.state", condition_key)
+        result = self._conditional_wait.wait_for_condition(function, timeout)
         if not result:
-            self.__log_element_state("loc.wait.for.state.failed", condition_key)
+            self._log_element_state("loc.wait.for.state.failed", condition_key)
         return result

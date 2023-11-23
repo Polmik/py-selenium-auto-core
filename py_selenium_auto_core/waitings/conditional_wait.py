@@ -28,8 +28,8 @@ class ConditionalWait:
             timeout_configuration (TimeoutConfiguration): Timeout configurations
             service_provider (ServiceProvider): Dependency container
         """
-        self.__timeout_configuration = timeout_configuration
-        self.__service_provider = service_provider
+        self._timeout_configuration = timeout_configuration
+        self._service_provider = service_provider
 
     def wait_for_driver(
         self,
@@ -58,7 +58,7 @@ class ConditionalWait:
         ignore_exceptions = exceptions_to_ignore or [StaleElementReferenceException]
         wait_timeout = self._resolve_condition_timeout(timeout)
         check_interval = self._resolve_polling_interval(polling_interval)
-        application = self.__service_provider.application()
+        application = self._service_provider.application()
         application.set_implicit_wait_timeout(0)
         wait = WebDriverWait(
             driver=application.driver,
@@ -68,7 +68,7 @@ class ConditionalWait:
         )
 
         result = wait.until(function, self.__get_timeout_exception_message(wait_timeout, message))
-        application.set_implicit_wait_timeout(self.__timeout_configuration.implicit)
+        application.set_implicit_wait_timeout(self._timeout_configuration.implicit)
         return result
 
     def wait_for_condition(
@@ -90,7 +90,7 @@ class ConditionalWait:
             True if condition satisfied and false otherwise.
         """
 
-        def predicate() -> bool:
+        def _predicate() -> bool:
             self.wait_for_true(
                 function=function,
                 timeout=timeout,
@@ -100,7 +100,7 @@ class ConditionalWait:
             return True
 
         return self._is_condition_satisfied(
-            function=predicate,
+            function=_predicate,
             exceptions_to_ignore=[TimeoutException],
         )
 
@@ -154,10 +154,10 @@ class ConditionalWait:
             raise ex
 
     def _resolve_condition_timeout(self, timeout: float) -> float:
-        return self.__timeout_configuration.condition if timeout is None else timeout
+        return self._timeout_configuration.condition if timeout is None else timeout
 
     def _resolve_polling_interval(self, polling_interval: float) -> float:
-        return self.__timeout_configuration.polling_interval if polling_interval is None else polling_interval
+        return self._timeout_configuration.polling_interval if polling_interval is None else polling_interval
 
     @staticmethod
     def _is_ignored_exception(ex: Exception, exceptions_to_ignore: List) -> bool:

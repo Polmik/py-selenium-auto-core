@@ -15,7 +15,7 @@ class ActionRetrier:
         Args:
             retry_configuration (RetryConfiguration): Retry configurations
         """
-        self.__retry_configuration = retry_configuration
+        self._retry_configuration = retry_configuration
 
     def do_with_retry(self, function: Callable, handled_exceptions: list = None) -> Any:
         """Retries the action when one of the handledExceptions occures.
@@ -31,8 +31,8 @@ class ActionRetrier:
             WebDriverTimeoutException: Throws when timeout exceeded and condition not satisfied.
         """
         exceptions_to_handle = handled_exceptions if handled_exceptions is not None else []
-        retry_attempts_left = self.__retry_configuration.number
-        actual_interval = self.__retry_configuration.polling_interval
+        retry_attempts_left = self._retry_configuration.number
+        actual_interval = self._retry_configuration.polling_interval
         result = None
 
         while retry_attempts_left >= 0:

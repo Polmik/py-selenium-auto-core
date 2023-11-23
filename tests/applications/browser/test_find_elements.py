@@ -147,10 +147,10 @@ class BaseTestFindElements(TestWithBrowser):
 
     @pytest.mark.parametrize(
         argnames=("count", "state"),
-        argvalues=(
+        argvalues=[
             pytest.param(ElementsCount.MoreThenZero, ElementState.Displayed),
             pytest.param(ElementsCount.Zero, ElementState.ExistsInAnyState),
-        ),
+        ],
     )
     def test_impossible_to_find_hidden_elements_with_wrong_arguments(
         self, reset_config, count: ElementsCount, state: ElementState

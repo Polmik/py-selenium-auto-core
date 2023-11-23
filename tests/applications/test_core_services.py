@@ -101,8 +101,9 @@ class TestStartup(Startup):
 
 
 class CustomStartup(TestStartup):
-    @staticmethod
+    @classmethod
     def configure_services(
+        cls,
         application_provider: Callable,
         settings: Optional[JsonSettingsFile] = None,
         service_provider: Optional[ServiceProvider] = None,

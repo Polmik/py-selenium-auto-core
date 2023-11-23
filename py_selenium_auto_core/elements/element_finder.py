@@ -17,8 +17,8 @@ class ElementFinder:
     """Provides ability to find elements in desired ElementState"""
 
     def __init__(self, logger: LocalizedLogger, conditional_wait: ConditionalWait):
-        self.__conditional_wait = conditional_wait
-        self.__logger = logger
+        self._conditional_wait = conditional_wait
+        self._logger = logger
 
     def find_element(
         self,
@@ -119,7 +119,7 @@ class ElementFinder:
                 result_elements.extend([el for el in found_elements if state.element_state_condition(el)])
                 return any(result_elements)
 
-            self.__conditional_wait.wait_for_driver(predicate, timeout)
+            self._conditional_wait.wait_for_driver(predicate, timeout)
         except TimeoutException as e:
             self._handle_timeout_exception(e, state, locator, found_elements, name)
         return result_elements
@@ -147,14 +147,14 @@ class ElementFinder:
             if not any(found_elements):
                 if desired_state.is_throwing_no_such_element_exception:
                     raise NoSuchElementException(message)
-                self.__logger.debug(
+                self._logger.debug(
                     "loc.no.elements.found.in.state",
                     None,
                     locator.to_string(),
                     desired_state.state_name,
                 )
             else:
-                self.__logger.debug(
+                self._logger.debug(
                     "loc.elements.were.found.but.not.in.state",
                     None,
                     locator.to_string(),
