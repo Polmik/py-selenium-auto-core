@@ -28,7 +28,7 @@ class LocalizationManager:
         )
         self.__core_localization_file = self.__get_localization_file(
             language,
-            RootPathHelper.current_root_path(__file__)(),
+            RootPathHelper.current_root_path(__file__),
         )
         self.logger = logger
 
