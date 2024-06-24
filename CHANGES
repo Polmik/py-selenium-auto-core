@@ -1,3 +1,8 @@
+v0.5.5
+* Added Python 3.12 Support
+* Updated requirements
+    Changed dependency-injector to dependency-injector-fork
+
 v0.5.4
 * Added CoreForm
 * Added Timer in functional

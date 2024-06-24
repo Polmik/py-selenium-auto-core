@@ -17,7 +17,7 @@ To simplify overriding of implementations this solution uses Dependency Injectio
 
 ### Supported Python Versions
 
-* Python 3.7-3.9
+* Python 3.7-3.12
 
 ### Installation 
 
