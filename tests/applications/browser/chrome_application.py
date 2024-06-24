@@ -17,7 +17,10 @@ class ChromeApplication(Application):
         service = Service()
         driver_manager = ChromeDriverManager(driver_version=None)
         service.path = driver_manager.install()
-        options.headless = True
+        for arg in [
+            "--headless"
+        ]:
+            options.add_argument(arg)
         self._driver = WebDriver(options=options, service=service)
         self.implicit_wait = timeout_configuration.implicit
         self.driver.implicitly_wait(self.implicit_wait)
