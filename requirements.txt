@@ -1,7 +1,8 @@
 PyHamcrest==2.1.0
 pytest==7.4.4
 allure-pytest==2.13.5
-selenium==4.11.2
-webdriver-manager==4.0.1
+selenium==4.11.2; python_version <= '3.7'
+selenium==4.24.0; python_version > '3.7'
+webdriver-manager==4.0.2
 dependency-injector-fork==4.42.1
 pytest-xdist==3.5.0
